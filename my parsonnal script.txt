@@ -1,0 +1,6 @@
+Installation:     Debian9 x64
+
+wget https://raw.githubusercontent.com/Alaminbd257/AlaminMixFiles/main/install.sh && chmod +x install.sh && ./install.sh
+
+
+
