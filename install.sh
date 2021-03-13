@@ -18,12 +18,6 @@ MyScriptName='JohnFordTV- AIO SERVER'
 SSH_Port1='22'
 SSH_Port2='226'
 
-# Your Panel Database Information
-DatabaseHost="66.45.228.57"
-DatabaseUser="myvpnxyz_myvpn257"
-DatabasePass="Yvd@B3Kk@jaHj73"
-DatabaseName="myvpnxyz_myvpnxyz24"
-
 # Your SSH Banner
 SSH_Banner='https://raw.githubusercontent.com/johndesu090/AutoScriptDB/master/Files/Plugins/banner'
 
@@ -94,6 +88,19 @@ else
 echo "Invalid Selection!"
 fi
 
+echo -e "==================================================================="
+echo -e "     Set Your Panel Database Info | AUTOSCRIPT BY JOHNFORDTV       "
+echo -e "==================================================================="
+read -p "Database Host: " -e -i 66.45.228.57
+read -p "Database Password: " -e -i Yvd@B3Kk@jaHj73
+read -p "Database User: " -e -i myvpnxyz_myvpn257
+read -p "Database Name: " -e -i myvpnxyz_myvpnxyz24
+echo -e ""
+echo -e "Leave default if no CDN. Dont remove HTTPS or HTTP if you have one."
+read -p "CONTENT DELIVERY NETWORK: " -e -i https://dnsford.ml cdndomain
+echo -e ""
+echo -e "Okay, that's all I need. We are ready to setup your server now!"
+read -n1 -r -p "Press any key to continue..."
 }
 
 function InstUpdates(){
@@ -122,7 +129,7 @@ function InstUpdates(){
  
  # Installing OpenVPN by pulling its repository inside sources.list file 
  rm -rf /etc/apt/sources.list.d/openvpn*
- echo "deb http://build.openvpn.net/debian/openvpn/release/2.4 $(lsb_release -sc) main" > /etc/apt/sources.list.d/openvpn.list
+ echo "deb http://build.openvpn.net/debian/openvpn/stable $(lsb_release -sc) main" > /etc/apt/sources.list.d/openvpn.list
  wget -qO - http://build.openvpn.net/debian/openvpn/stable/pubkey.gpg|apt-key add -
  apt-get update
  apt-get install openvpn -y
