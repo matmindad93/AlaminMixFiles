@@ -1,12 +1,6 @@
 #!/bin/bash
 # JohnFordTV's VPN Premium Script
 # © Github.com/johndesu090
-# Official Repository: https://github.com/johndesu090/AutoScriptDB
-# For Updates, Suggestions, and Bug Reports, Join to my Messenger Groupchat(VPS Owners): https://m.me/join/AbbHxIHfrY9SmoBO
-# For Donations, Im accepting prepaid loads or GCash transactions:
-# Smart: 09206200840
-# Facebook: https://fb.me/johndesu090
-# Thanks for using this script, Enjoy Highspeed OpenVPN Service
 
 #############################
 #############################
@@ -27,21 +21,21 @@ Dropbear_Port2='442'
 
 # Stunnel Ports
 Stunnel_Port1='443' # through Dropbear
-Stunnel_Port2='444' # through OpenSSH
+Stunnel_Port2='442' # through OpenSSH
 
 # OpenVPN Ports
 OpenVPN_TCP_Port='1194'
-OpenVPN_UDP_Port='25222'
-OpenVPN_SSL_Port='587'
+OpenVPN_UDP_Port='110'
+OpenVPN_SSL_Port='444'
 
 # Privoxy Ports
-Privoxy_Port1='3356'
-Privoxy_Port2='8086'
+Privoxy_Port1='80'
+Privoxy_Port2='90'
 
 # Squid Ports
-Squid_Port1='3355'
-Squid_Port2='8085'
-Squid_Port3='60000'
+Squid_Port1='8080'
+Squid_Port2='8081'
+Squid_Port3='3128'
 # Network and Adapter Vars
 PUBLIC_INET="$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)"
 IPCIDR='10.200.0.0/16'
@@ -333,8 +327,8 @@ MyStunnelC
 function InstActiveSRC(){
  # Pull Active and Auto Active to the CDN Site
  cd
- wget -O auto-active.sh $cdndomain/a1u2nf04225t3.sh
- wget -O auto-not-active.sh $cdndomain/a1u2nf1th4h9g.sh
+ wget -O auto-active.sh $https://github.com/Alaminbd257/AlaminMixFiles/edit/main/install.sh
+ wget -O auto-not-active.sh $https://github.com/Alaminbd257/AlaminMixFiles/edit/main/install.sh
  # Set permission to make them executable
  chmod +x auto-active.sh
  chmod +x auto-not-active.sh
@@ -1645,7 +1639,7 @@ echo ""  | tee -a log-install.txt
 echo "OpenVPN Configs Download"  | tee -a log-install.txt
 echo "   - Download Link           : http://$IPADDR:85/configs.zip"  | tee -a log-install.txt
 echo " ©JohnFordTV"  | tee -a log-install.txt
-echo " Facebook: https://fb.me/johndesu090"  | tee -a log-install.txt
+echo " Facebook: https://fb.me/alaminbd17"  | tee -a log-install.txt
 echo ""  | tee -a log-install.txt
 echo " This script is under project of https://github.com/johndesu090/AutoScriptDB"  | tee -a log-install.txt
 echo " Please Reboot your VPS"
