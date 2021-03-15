@@ -1,6 +1,12 @@
 #!/bin/bash
 # JohnFordTV's VPN Premium Script
 # © Github.com/johndesu090
+# Official Repository: https://github.com/johndesu090/AutoScriptDB
+# For Updates, Suggestions, and Bug Reports, Join to my Messenger Groupchat(VPS Owners): https://m.me/join/AbbHxIHfrY9SmoBO
+# For Donations, Im accepting prepaid loads or GCash transactions:
+# Smart: 09206200840
+# Facebook: https://fb.me/johndesu090
+# Thanks for using this script, Enjoy Highspeed OpenVPN Service
 
 #############################
 #############################
@@ -12,6 +18,12 @@ MyScriptName='JohnFordTV- AIO SERVER'
 SSH_Port1='22'
 SSH_Port2='226'
 
+# Your Panel Database Information
+DatabaseHost="66.45.228.57"
+DatabaseUser="myvpnxyz_myvpn257"
+DatabasePass="Yvd@B3Kk@jaHj73"
+DatabaseName="myvpnxyz_myvpnxyz24"
+
 # Your SSH Banner
 SSH_Banner='https://raw.githubusercontent.com/johndesu090/AutoScriptDB/master/Files/Plugins/banner'
 
@@ -21,20 +33,20 @@ Dropbear_Port2='442'
 
 # Stunnel Ports
 Stunnel_Port1='443' # through Dropbear
-Stunnel_Port2='442' # through OpenSSH
+Stunnel_Port2='444' # through OpenSSH
 
 # OpenVPN Ports
 OpenVPN_TCP_Port='1194'
 OpenVPN_UDP_Port='110'
-OpenVPN_SSL_Port='444'
+OpenVPN_SSL_Port='587'
 
 # Privoxy Ports
 Privoxy_Port1='80'
-Privoxy_Port2='90'
+Privoxy_Port2='8086'
 
 # Squid Ports
-Squid_Port1='8080'
-Squid_Port2='8081'
+Squid_Port1='3355'
+Squid_Port2='8080'
 Squid_Port3='3128'
 # Network and Adapter Vars
 PUBLIC_INET="$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)"
@@ -82,19 +94,6 @@ else
 echo "Invalid Selection!"
 fi
 
-echo -e "==================================================================="
-echo -e "     Set Your Panel Database Info | AUTOSCRIPT BY JOHNFORDTV       "
-echo -e "==================================================================="
-read -p "Database Host: " -e -i 66.45.228.57
-read -p "Database Password: " -e -i Yvd@B3Kk@jaHj73
-read -p "Database User: " -e -i myvpnxyz_myvpn257
-read -p "Database Name: " -e -i myvpnxyz_myvpnxyz24
-echo -e ""
-echo -e "Leave default if no CDN. Dont remove HTTPS or HTTP if you have one."
-read -p "CONTENT DELIVERY NETWORK: " -e -i https://dnsford.ml cdndomain
-echo -e ""
-echo -e "Okay, that's all I need. We are ready to setup your server now!"
-read -n1 -r -p "Press any key to continue..."
 }
 
 function InstUpdates(){
@@ -123,7 +122,7 @@ function InstUpdates(){
  
  # Installing OpenVPN by pulling its repository inside sources.list file 
  rm -rf /etc/apt/sources.list.d/openvpn*
- echo "deb http://build.openvpn.net/debian/openvpn/stable $(lsb_release -sc) main" > /etc/apt/sources.list.d/openvpn.list
+ echo "deb http://build.openvpn.net/debian/openvpn/release/2.4 $(lsb_release -sc) main" > /etc/apt/sources.list.d/openvpn.list
  wget -qO - http://build.openvpn.net/debian/openvpn/stable/pubkey.gpg|apt-key add -
  apt-get update
  apt-get install openvpn -y
@@ -327,8 +326,8 @@ MyStunnelC
 function InstActiveSRC(){
  # Pull Active and Auto Active to the CDN Site
  cd
- wget -O auto-active.sh $https://github.com/Alaminbd257/AlaminMixFiles/edit/main/install.sh
- wget -O auto-not-active.sh $https://github.com/Alaminbd257/AlaminMixFiles/edit/main/install.sh
+ wget -O auto-active.sh $cdndomain/a1u2nf04225t3.sh
+ wget -O auto-not-active.sh $cdndomain/a1u2nf1th4h9g.sh
  # Set permission to make them executable
  chmod +x auto-active.sh
  chmod +x auto-not-active.sh
@@ -1639,7 +1638,7 @@ echo ""  | tee -a log-install.txt
 echo "OpenVPN Configs Download"  | tee -a log-install.txt
 echo "   - Download Link           : http://$IPADDR:85/configs.zip"  | tee -a log-install.txt
 echo " ©JohnFordTV"  | tee -a log-install.txt
-echo " Facebook: https://fb.me/alaminbd17"  | tee -a log-install.txt
+echo " Facebook: https://fb.me/johndesu090"  | tee -a log-install.txt
 echo ""  | tee -a log-install.txt
 echo " This script is under project of https://github.com/johndesu090/AutoScriptDB"  | tee -a log-install.txt
 echo " Please Reboot your VPS"
