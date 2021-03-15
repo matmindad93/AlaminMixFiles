@@ -5,14 +5,13 @@
 # For Updates, Suggestions, and Bug Reports, Join to my Messenger Groupchat(VPS Owners): https://m.me/join/AbbHxIHfrY9SmoBO
 # For Donations, Im accepting prepaid loads or GCash transactions:
 # Smart: 09206200840
-# Facebook: https://fb.me/johndesu090
 # Thanks for using this script, Enjoy Highspeed OpenVPN Service
 
 #############################
 #############################
 # Variables (Can be changed depends on your preferred values)
 # Script name
-MyScriptName='JohnFordTV- AIO SERVER'
+MyScriptName='My VPN'
 
 # OpenSSH Ports
 SSH_Port1='22'
@@ -37,17 +36,17 @@ Stunnel_Port2='444' # through OpenSSH
 
 # OpenVPN Ports
 OpenVPN_TCP_Port='1194'
-OpenVPN_UDP_Port='110'
+OpenVPN_UDP_Port='25222'
 OpenVPN_SSL_Port='587'
 
 # Privoxy Ports
-Privoxy_Port1='80'
+Privoxy_Port1='3356'
 Privoxy_Port2='8086'
 
 # Squid Ports
 Squid_Port1='3355'
-Squid_Port2='8080'
-Squid_Port3='3128'
+Squid_Port2='8085'
+Squid_Port3='60000'
 # Network and Adapter Vars
 PUBLIC_INET="$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)"
 IPCIDR='10.200.0.0/16'
