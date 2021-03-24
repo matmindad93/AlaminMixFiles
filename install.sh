@@ -1,28 +1,31 @@
 #!/bin/bash
-# JohnFordTV's VPN Premium Script
-# © Github.com/johndesu090
-# Official Repository: https://github.com/johndesu090/AutoScriptDB
-# For Updates, Suggestions, and Bug Reports, Join to my Messenger Groupchat(VPS Owners): https://m.me/join/AbbHxIHfrY9SmoBO
-# For Donations, Im accepting prepaid loads or GCash transactions:
-# Smart: 09206200840
-# Facebook: https://fb.me/johndesu090
-# Thanks for using this script, Enjoy Highspeed OpenVPN Service
-
 #############################
 #############################
 # Variables (Can be changed depends on your preferred values)
 # Script name
 MyScriptName='JohnFordTV- AIO SERVER'
 
+#
+#####################
+### Configuration ###
+#####################
+### Author
+VPN_Owner='My VPN';
+VPN_Name='MyVPN';
+Filename_alias='myvpn';
+API_LINK='http://routervpn.pro/api/authentication';
+API_KEY='MYVPN';
+
 # OpenSSH Ports
 SSH_Port1='22'
 SSH_Port2='226'
 
-# Your Panel Database Information
-DatabaseHost="66.45.228.57"
-DatabaseUser="myvpnxyz_myvpn257"
-DatabasePass="Yvd@B3Kk@jaHj73"
-DatabaseName="myvpnxyz_myvpnxyz24"
+# MySQL Remote Server side
+DatabaseHost='67.211.218.75';
+DatabaseName='rawterxy_rawter';
+DatabaseUser='rawterxy_rawter1';
+DatabasePass='d=PykXu0-B3T';
+DatabasePort='3306';
 
 # Your SSH Banner
 SSH_Banner='https://raw.githubusercontent.com/johndesu090/AutoScriptDB/master/Files/Plugins/banner'
