@@ -9,8 +9,6 @@
 VPN_Owner='My VPN';
 VPN_Name='MyVPN';
 Filename_alias='myvpn';
-API_LINK='http://routervpn.pro/api/authentication';
-API_KEY='MYVPN';
 
 ### Added Server ports
 Socks_port='80';
