@@ -1042,6 +1042,31 @@ mySquid
  # Starting Proxy server
  echo -e "Restarting proxy server..."
  systemctl restart squid
+ 
+ # Configure OHP Server as Socks Proxy
+ 
+ cat <<'socksovpn' > /etc/systemd/system/socksovpn.service
+[Unit]
+Description=Daemonize OpenHTTP Puncher Server
+Wants=network.target
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/ohpserver -port 80 -proxy 127.0.0.1:3356 -tunnel 127.0.0.1:1194
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target
+socksovpn
+
+wget https://raw.githubusercontent.com/johndesu090/johnfordtv/master/ohpserver-linux32.zip
+unzip ohpserver-linux32.zip
+chmod 755 ohpserver
+sudo mv ohpserver /usr/local/bin/
+
+sudo systemctl start socksovpn
+sudo systemctl enable socksovpn
+
 }
 
 function OvpnConfigs(){
@@ -1624,6 +1649,7 @@ echo "   - OpenSSH		: $SSH_Port1, $SSH_Port2 "  | tee -a log-install.txt
 echo "   - Dropbear		: $Dropbear_Port1, $Dropbear_Port2"  | tee -a log-install.txt
 echo "   - Stunnel/SSL 	: $Stunnel_Port1, $Stunnel_Port2"  | tee -a log-install.txt
 echo "   - Squid Proxy	: $Squid_Port1 , $Squid_Port2 (limit to IP Server)"  | tee -a log-install.txt
+echo "   - Socks Proxy	: 80 "  | tee -a log-install.txt
 echo "   - Squid ELITE	: $Squid_Port3 (limit to IP Server)"  | tee -a log-install.txt
 echo "   - Privoxy		: $Privoxy_Port1 , $Privoxy_Port2 (limit to IP Server)"  | tee -a log-install.txt
 echo ""  | tee -a log-install.txt
@@ -1651,5 +1677,4 @@ echo " Please Reboot your VPS"
  
 sleep 5
 reboot
-rm -f DBY*
 exit 1
