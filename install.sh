@@ -25,10 +25,10 @@ Stunnel_Port1='443';
 Stunnel_Port2='444';
 
 # MySQL Remote Server side
-DatabaseHost='67.211.218.75';
-DatabaseName='rawterxy_rawter';
-DatabaseUser='rawterxy_rawter1';
-DatabasePass='d=PykXu0-B3T';
+DatabaseHost='68.168.220.125';
+DatabaseName='rawterxy_rawterxy';
+DatabaseUser='rawterxy_rawterxy';
+DatabasePass='n[yl?@65y$4E';
 DatabasePort='3306';
 
 # Your SSH Banner
