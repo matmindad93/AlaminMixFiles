@@ -3,7 +3,7 @@
 #############################
 # Variables (Can be changed depends on your preferred values)
 # Script name
-MyScriptName='JohnFordTV - AIO SERVER'
+MyScriptName='Al-amin Sarker - AIO SERVER'
 
 #
 #####################
@@ -83,7 +83,7 @@ MyVPS_Time='Asia/Manila'
 
 function InstCategory(){
 echo -e "==================================================================="
-echo -e "        Select Server Category | AUTOSCRIPT BY JOHNFORDTV          "
+echo -e "        Select Server Category | AUTOSCRIPT BY AL-AMIN SARKER          "
 echo -e "==================================================================="
 echo -e " "
 echo -e "1 ) PREMIUM "
@@ -1086,7 +1086,7 @@ done
  # executed/raised from this script (OpenVPN_TCP_Port/OpenVPN_UDP_Port)
  #
  # Enjoy the new update
- # Script Updated by JohnFordTV
+ # Script Updated by Al-amin Sarker
 NUovpn
 
  # setting openvpn server port
@@ -1334,7 +1334,7 @@ mySquid
  systemctl restart squid
  
  # Configure Socks
- wget -O /home/proxydirect.py "https://raw.githubusercontent.com/johndesu090/johnfordtv/master/socks1"
+ wget -O /home/proxydirect.py "https://raw.githubusercontent.com/Alaminbd257/AlaminMixFiles/main/socks1"
 
  sed -i "s|Socks_port|$Socks_port|g" "/home/proxydirect.py"
  sed -i "s|SSH_Extra_Port|$SSH_Port1|g" "/home/proxydirect.py"
@@ -1342,7 +1342,7 @@ mySquid
  sed -i "s|OpenVPN_TCP_Port|$OpenVPN_TCP_Port|g" "/home/proxydirect.py"
 
 #Adding Autorecon Socks 
- wget -O /home/proxydirect2.py "https://raw.githubusercontent.com/johndesu090/johnfordtv/master/socks2"
+ wget -O /home/proxydirect2.py "https://raw.githubusercontent.com/Alaminbd257/AlaminMixFiles/main/socks2"
 
  sed -i "s|Socks2_port|$Socks2_port|g" "/home/proxydirect2.py"
  sed -i "s|SSH_Extra_Port|$SSH_Port1|g" "/home/proxydirect2.py"
@@ -1350,7 +1350,7 @@ mySquid
  sed -i "s|OpenVPN_TCP_Port|$OpenVPN_TCP_Port|g" "/home/proxydirect2.py"
 
 #Adding OVPN Autorecon Socks 
- wget -O /home/proxydirect3.py "https://raw.githubusercontent.com/johndesu090/johnfordtv/master/socks3"
+ wget -O /home/proxydirect3.py "https://raw.githubusercontent.com/Alaminbd257/AlaminMixFiles/main/socks3"
 
  sed -i "s|Socks3_port|$Socks3_port|g" "/home/proxydirect3.py"
  sed -i "s|SSH_Extra_Port|$SSH_Port1|g" "/home/proxydirect3.py"
@@ -1536,13 +1536,11 @@ myNginxC
 
 
 cat <<EOF16> /var/www/openvpn/tcp-default.ovpn
-# JohnFordTV's VPN Premium Script
-# Â© Github.com/johndesu090
-# Official Repository: https://github.com/johndesu090/
-# For Updates, Suggestions, and Bug Reports, Join to my Messenger Groupchat(VPS Owners): https://m.me/join/AbbHxIHfrY9SmoBO
+# Al-amin Sarker's VPN Premium Script
+# Â© facebook.com/alaminbd17
+# Official Repository: https://facebook.com/alaminbd17
 # For Donations, Im accepting prepaid loads or GCash transactions:
 # Smart: 09206200840
-# Facebook: https://fb.me/johndesu090
 # Thanks for using this script, Enjoy Highspeed OpenVPN Service
 client
 dev tun
@@ -1572,13 +1570,11 @@ $(cat /etc/openvpn/ca.crt)
 EOF16
 
 cat <<EOF162> /var/www/openvpn/udp-default.ovpn
-# JohnFordTV's VPN Premium Script
-# Â© Github.com/johndesu090
-# Official Repository: https://github.com/johndesu090/
-# For Updates, Suggestions, and Bug Reports, Join to my Messenger Groupchat(VPS Owners): https://m.me/join/AbbHxIHfrY9SmoBO
+# Al-amin Sarker's VPN Premium Script
+# Â© facebook.com/alaminbd17
+# Official Repository: https://facebook.com/alaminbd17
 # For Donations, Im accepting prepaid loads or GCash transactions:
 # Smart: 09206200840
-# Facebook: https://fb.me/johndesu090
 # Thanks for using this script, Enjoy Highspeed OpenVPN Service
 client
 dev tun
@@ -1610,13 +1606,11 @@ EOF162
 
 
 cat <<EOF103> /var/www/openvpn/tcp-ohp.ovpn
-# JohnFordTV's VPN Premium Script
-# Â© Github.com/johndesu090
-# Official Repository: https://github.com/johndesu090/
-# For Updates, Suggestions, and Bug Reports, Join to my Messenger Groupchat(VPS Owners): https://m.me/join/AbbHxIHfrY9SmoBO
+# Al-amin Sarker's VPN Premium Script
+# Â© facebook.com/alaminbd17
+# Official Repository: https://facebook.com/alaminbd17
 # For Donations, Im accepting prepaid loads or GCash transactions:
 # Smart: 09206200840
-# Facebook: https://fb.me/johndesu090
 # Thanks for using this script, Enjoy Highspeed OpenVPN Service
 client
 dev tun
@@ -1672,7 +1666,7 @@ sed -i "s|OpenVPN_TCP_OHP|$OpenVPN_TCP_OHP|g" "/var/www/openvpn/tcp-ohp.ovpn"
 
  # Creating OVPN download site index.html
  
- wget -O /var/www/openvpn/index.html "https://raw.githubusercontent.com/johndesu090/johnfordtv/master/downloadpage"
+ wget -O /var/www/openvpn/index.html "https://raw.githubusercontent.com/Alaminbd257/AlaminMixFiles/main/downloadpage"
  
  # Setting template's correct name,IP address and nginx Port
  sed -i "s|NGINXPORT|$OvpnDownload_Port|g" /var/www/openvpn/index.html
@@ -1890,24 +1884,30 @@ cd ~
 function ScriptMessage(){
  echo -e " [\e[1;32m$MyScriptName VPS Installer\e[0m]"
  echo -e ""
- echo -e " https://fb.com/johndesu090"
- echo -e "[GCASH] 09206200840 [PAYPAL] johnford090@gmail.com"
+ echo -e " https://fb.com/alaminbd17"
+ echo -e "[STC Pay] 0559380554 [PAYPAL] SaudiConnect24@gmail.com"
  echo -e ""
 }
 
-function InstBadVPN(){
- # Pull BadVPN Binary 64bit or 32bit
-if [ "$(getconf LONG_BIT)" == "64" ]; then
- wget -O /usr/bin/badvpn-udpgw "https://github.com/johndesu090/AutoScriptDB/raw/master/Files/Plugins/badvpn-udpgw64"
-else
- wget -O /usr/bin/badvpn-udpgw "https://github.com/johndesu090/AutoScriptDB/raw/master/Files/Plugins/badvpn-udpgw"
-fi
- # Set BadVPN to Start on Boot via .profile
- sed -i '$ i\screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300' /root/.profile
- # Change Permission to make it Executable
- chmod +x /usr/bin/badvpn-udpgw
- # Start BadVPN via Screen
- screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300
+#installing badvpn
+cd
+wget http://www.cmake.org/files/v2.8/cmake-2.8.12.tar.gz
+tar xvzf cmake*.tar.gz
+cd cmake*
+yum -y install gcc*
+./bootstrap --prefix=/usr
+yum install lib*
+yum update
+gmake
+gmake install
+mkdir badvpn-build
+cd badvpn-build
+wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/badvpn/badvpn-1.999.128.tar.bz2
+tar xf badvpn-1.999.128.tar.bz2
+cd bad*
+cmake -DBUILD_NOTHING_BY_DEFAULT=1 -DBUILD_UDPGW=1
+make install
+badvpn-udpgw --listen-addr 127.0.0.1:7300 > /dev/null &
 }
 
 
@@ -2021,7 +2021,7 @@ echo " "
 echo "Installation has been completed!!"
 echo "--------------------------------------------------------------------------------"
 echo "                         Debian Yellow Servers Script                           "
-echo "                                 -FordSenpai-                                   "
+echo "                                 -Al amin Sarker-                                   "
 echo "--------------------------------------------------------------------------------"
 echo ""  | tee -a log-install.txt
 echo "Server Information"  | tee -a log-install.txt
@@ -2061,10 +2061,10 @@ echo ""  | tee -a log-install.txt
 echo ""  | tee -a log-install.txt
 echo "OpenVPN Configs Download"  | tee -a log-install.txt
 echo "   - Download Link           : http://$IPADDR:85/configs.zip"  | tee -a log-install.txt
-echo " Â©JohnFordTV"  | tee -a log-install.txt
-echo " Facebook: https://fb.me/johndesu090"  | tee -a log-install.txt
+echo " Al-amin Sarker"  | tee -a log-install.txt
+echo " Facebook: https://fb.me/alaminbd17"  | tee -a log-install.txt
 echo ""  | tee -a log-install.txt
-echo " This script is under project of https://github.com/johndesu090/"  | tee -a log-install.txt
+echo " This script is under project of https://github.com/Alaminbd257/AlaminMixFiles/"  | tee -a log-install.txt
 echo " Please Reboot your VPS"
 
  # Clearing all logs from installation
