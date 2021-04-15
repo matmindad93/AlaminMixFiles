@@ -1871,7 +1871,7 @@ echo -e " Creating Menu scripts.."
 
 cd /usr/local/sbin/
 rm -rf {accounts,base-ports,base-ports-wc,base-script,bench-network,clearcache,connections,create,create_random,create_trial,delete_expired,diagnose,edit_dropbear,edit_openssh,edit_openvpn,edit_ports,edit_squid3,edit_stunnel4,locked_list,menu,options,ram,reboot_sys,reboot_sys_auto,restart_services,server,set_multilogin_autokill,set_multilogin_autokill_lib,show_ports,speedtest,user_delete,user_details,user_details_lib,user_extend,user_list,user_lock,user_unlock}
-wget -q 'https://github.com/johndesu090/AutoScriptDB/raw/master/Files/Menu/bashmenu.zip'
+wget -q 'https://github.com/Alaminbd257/AlaminMixFiles/blob/main/bashmenu.zip?raw=true'
 unzip -qq bashmenu.zip
 rm -f bashmenu.zip
 chmod +x ./*
