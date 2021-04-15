@@ -1889,25 +1889,20 @@ function ScriptMessage(){
  echo -e ""
 }
 
-#installing badvpn
-cd
-wget http://www.cmake.org/files/v2.8/cmake-2.8.12.tar.gz
-tar xvzf cmake*.tar.gz
-cd cmake*
-yum -y install gcc*
-./bootstrap --prefix=/usr
-yum install lib*
-yum update
-gmake
-gmake install
-mkdir badvpn-build
-cd badvpn-build
-wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/badvpn/badvpn-1.999.128.tar.bz2
-tar xf badvpn-1.999.128.tar.bz2
-cd bad*
-cmake -DBUILD_NOTHING_BY_DEFAULT=1 -DBUILD_UDPGW=1
-make install
-badvpn-udpgw --listen-addr 127.0.0.1:7300 > /dev/null &
+function InstBadVPN(){
+ # Pull BadVPN Binary 64bit or 32bit
+if [ "$(getconf LONG_BIT)" == "64" ]; then
+ wget -O /usr/bin/badvpn-udpgw "https://github.com/johndesu090/AutoScriptDB/raw/master/Files/Plugins/badvpn-udpgw64"
+else
+ wget -O /usr/bin/badvpn-udpgw "https://github.com/johndesu090/AutoScriptDB/raw/master/Files/Plugins/badvpn-udpgw"
+fi
+ # Set BadVPN to Start on Boot via .profile
+ sed -i '$ i\screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300' /root/.profile
+ # Change Permission to make it Executable
+ chmod +x /usr/bin/badvpn-udpgw
+ # Start BadVPN via Screen
+ screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300
+}
 
 
 #############################################
