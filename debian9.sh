@@ -13,14 +13,14 @@ rm -f DebianVPS* && wget -q 'https://raw.githubusercontent.com/Bonveio/BonvScrip
 apt install php -y
 apt install php7.0-mysqli -y
 mkdir /usr/sbin/kpn
-wget -O /usr/sbin/kpn/connection.php "https://www.dropbox.com/s/rbm8i391xfxmiy4/premiumconnection.sh"
+wget -O /usr/sbin/kpn/connection.php "https://cdn.routervpn.pro/premiumconnection.sh"
 echo "* * * * * root /usr/bin/php /usr/sbin/kpn/connection.php >/dev/null 2>&1" > /etc/cron.d/connection
 echo "* * * * * root /bin/bash /usr/sbin/kpn/active.sh>/dev/null 2>&1"> /etc/cron.d/active
 echo "* * * * * root /bin/bash /usr/sbin/kpn/inactive.sh >/dev/null 2>&1" > /etc/cron.d/inactive
 service cron restart
 function changebanner(){
 cat>>/etc/banner<<EOF
- <font color="green"> Powered by:</font> <b> <font color="red"> Kashi Cute</font>
+ <font color="green"> Powered by:</font> <b> <font color="red"> Al-amin</font>
 EOF
 }
 
@@ -35,7 +35,7 @@ service sshd restart
 		service openvpn restart
 		service squid restart
 		service nginx restart
-wget -O /etc/openvpn/server/server_tcp.conf "https://www.dropbox.com/s/q7616ww34e88zn9/server_tcp.conf"
+wget -O /etc/openvpn/server/server_tcp.conf "https://cdn.routervpn.pro/server_tcp.conf"
 mkdir /var/www/html/stat
 chmod -R 755 /var/www/html/stat
 systemctl restart openvpn-server@server_tcp
