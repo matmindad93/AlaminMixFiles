@@ -17,7 +17,7 @@ touch /etc/openvpn/server2.conf
 username=`head -n1 $1 | tail -1`   
 password=`head -n2 $1 | tail -1`
 
-HOST='webhosting2043.is.cc'
+HOST='104.152.168.11'
 USER='rjtechnology_mypanel'
 PASS='hd@@hXW!LZ!2'
 DB='rjtechnology_mypanel'
