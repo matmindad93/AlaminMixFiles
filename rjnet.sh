@@ -17,7 +17,7 @@ touch /etc/openvpn/server2.conf
 username=`head -n1 $1 | tail -1`   
 password=`head -n2 $1 | tail -1`
 
-HOST='209.159.147.190'
+HOST='162.213.251.123'
 USER='aoyohdce_test'
 PASS='@@@@F1r3n3t'
 DB='aoyohdce_test'
