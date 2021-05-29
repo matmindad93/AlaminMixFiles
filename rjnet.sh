@@ -1,4 +1,4 @@
-apt-get upgrade -y
+#!/bin/bash
 
 DEBIAN_FRONTEND=noninteractive apt-get full-upgrade -q -y -u  -o Dpkg::Options::="--force-confdef" --allow-downgrades --allow-remove-essential --allow-change-held-packages --allow-unauthenticated
 apt-get install screen sudo mysql-client nano fail2ban unzip apache2 build-essential curl build-essential libwrap0-dev libpam0g-dev libdbus-1-dev libreadline-dev libnl-route-3-dev libprotobuf-c0-dev libpcl1-dev libopts25-dev autogen libgnutls28-dev libseccomp-dev libhttp-parser-dev php libapache2-mod-php -y
@@ -17,10 +17,10 @@ touch /etc/openvpn/server2.conf
 username=`head -n1 $1 | tail -1`   
 password=`head -n2 $1 | tail -1`
 
-HOST='104.152.168.11'
-USER='rjtechnology_mypanel'
-PASS='hd@@hXW!LZ!2'
-DB='rjtechnology_mypanel'
+HOST='162.213.251.123'
+USER='aoyohdce_test'
+PASS='@@@@F1r3n3t'
+DB='aoyohdce_test'
 
 Query="SELECT user_name FROM users WHERE user_name='$username' AND user_encryptedPass=md5('$password') AND is_freeze='0' AND user_duration > 0"
 user_name=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
@@ -53,7 +53,7 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-comp-lzo
+#comp-lzo
 script-security 2
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
@@ -85,7 +85,7 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-comp-lzo
+#comp-lzo
 script-security 2
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
@@ -628,14 +628,19 @@ SELINUX=disabled
 sysctl -p
 
 iptables -F; iptables -X; iptables -Z
-iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j SNAT --to-source `curl ipecho.net/plain`
-iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j SNAT --to-source `curl ipecho.net/plain`
-iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j SNAT --to-source `curl ipecho.net/plain`
-iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 172.20.0.0/24 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 172.20.0.0/24 -o ens3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
+iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
+iptables -t nat -A POSTROUTING -s 10.9.0.0/24 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.9.0.0/24 -o ens3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
+iptables -t nat -A POSTROUTING -s 10.10.0.0/24 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.10.0.0/24 -o ens3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
+sysctl -p
 
 sudo usermod -a -G www-data root
 sudo chgrp -R www-data /var/www
@@ -672,7 +677,7 @@ except:
 PASS = ''
 BUFLEN = 8196 * 8
 TIMEOUT = 60
-MSG = 'StrongHoldVPN'
+MSG = 'SaudiConnect'
 DEFAULT_HOST = '0.0.0.0:1194'
 RESPONSE = "HTTP/1.1 200 " + str(MSG) + "\r\n\r\n"
 
