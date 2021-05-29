@@ -628,19 +628,14 @@ SELINUX=disabled
 sysctl -p
 
 iptables -F; iptables -X; iptables -Z
-iptables -t nat -A POSTROUTING -s 172.20.0.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 172.20.0.0/24 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.9.0.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.9.0.0/24 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.10.0.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.10.0.0/24 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
-sysctl -p
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j SNAT --to-source `curl ipecho.net/plain`
 
 sudo usermod -a -G www-data root
 sudo chgrp -R www-data /var/www
