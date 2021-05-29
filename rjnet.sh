@@ -17,7 +17,7 @@ touch /etc/openvpn/server2.conf
 username=`head -n1 $1 | tail -1`   
 password=`head -n2 $1 | tail -1`
 
-HOST='162.213.251.123'
+HOST='209.159.147.190'
 USER='aoyohdce_test'
 PASS='@@@@F1r3n3t'
 DB='aoyohdce_test'
@@ -53,7 +53,7 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-#comp-lzo
+comp-lzo
 script-security 2
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
@@ -85,7 +85,7 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-#comp-lzo
+comp-lzo
 script-security 2
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
@@ -672,7 +672,7 @@ except:
 PASS = ''
 BUFLEN = 8196 * 8
 TIMEOUT = 60
-MSG = 'SaudiConnect'
+MSG = 'StrongHoldVPN'
 DEFAULT_HOST = '0.0.0.0:1194'
 RESPONSE = "HTTP/1.1 200 " + str(MSG) + "\r\n\r\n"
 
@@ -937,5 +937,5 @@ history -c
 cd /root || exit
 rm -f /root/installer.sh
 echo -e "\e[1;32m Installing Done \033[0m"
-echo 'root:@@Alaminbd257' | sudo chpasswd
+echo 'root:@@Alaminbd' | sudo chpasswd
 reboot
