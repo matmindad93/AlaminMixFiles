@@ -17,10 +17,10 @@ touch /etc/openvpn/server2.conf
 username=`head -n1 $1 | tail -1`   
 password=`head -n2 $1 | tail -1`
 
-HOST='162.213.251.123'
-USER='aoyohdce_test'
-PASS='@@@@F1r3n3t'
-DB='aoyohdce_test'
+HOST='webhosting2043.is.cc'
+USER='myvpnxyz_yoyo3'
+PASS='myvpnxyz_yoyo3'
+DB='myvpnxyz_yoyo3'
 
 Query="SELECT user_name FROM users WHERE user_name='$username' AND user_encryptedPass=md5('$password') AND is_freeze='0' AND user_duration > 0"
 user_name=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
@@ -672,7 +672,7 @@ except:
 PASS = ''
 BUFLEN = 8196 * 8
 TIMEOUT = 60
-MSG = 'StrongHoldVPN'
+MSG = 'SaudiConnect'
 DEFAULT_HOST = '0.0.0.0:1194'
 RESPONSE = "HTTP/1.1 200 " + str(MSG) + "\r\n\r\n"
 
@@ -937,5 +937,5 @@ history -c
 cd /root || exit
 rm -f /root/installer.sh
 echo -e "\e[1;32m Installing Done \033[0m"
-echo 'root:@@Alaminbd' | sudo chpasswd
+echo 'root:@@Alaminbd257' | sudo chpasswd
 reboot
