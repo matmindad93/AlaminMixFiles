@@ -932,7 +932,6 @@ cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 sed -i 's/#ForwardToWall=yes/ForwardToWall=no/g' /etc/systemd/journald.conf
 clear
 echo "Installation Done"
-sudo apt-get autoremove -y > /dev/null 2>&1
 sudo apt-get clean > /dev/null 2>&1
 history -c
 cd /root || exit
