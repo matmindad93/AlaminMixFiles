@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #Database Details
-HOST='webhosting2037.is.cc';
-USER='aoyovpnc_aoyo';
-PASS='@@Alaminbd12';
-DBNAME='aoyovpnc_aoyo';
+HOST='webhosting2043.is.cc';
+USER='routervp_aoyovpn';
+PASS='SrJ!AwHKOi0#';
+DBNAME='routervp_aoyovpn';
 
 echo -e "\e[1;32m Installing Server \033[0m"
 sleep 3
