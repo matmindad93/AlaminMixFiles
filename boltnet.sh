@@ -925,14 +925,14 @@ update-rc.d cron enable
 update-rc.d stunnel4 enable
 update-rc.d tlp enable
 service openvpn restart
-service squid3 start
+service squid3 restart
 service apache2 start
 service stunnel4 restart
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 sed -i 's/#ForwardToWall=yes/ForwardToWall=no/g' /etc/systemd/journald.conf
 clear
 echo "Installation Done"
-udo apt-get clean > /dev/null 2>&1
+sudo apt-get clean > /dev/null 2>&1
 history -c
 cd /root || exit
 rm -f /root/installer.sh
