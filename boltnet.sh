@@ -277,61 +277,46 @@ touch /var/www/html/stat/ipp.txt
 chmod 755 /var/www/html/stat/*
 
 
-sudo touch /etc/apt/sources.list.d/trusty_sources.list
-echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe" | sudo tee --append /etc/apt/sources.list.d/trusty_sources.list > /dev/null
-sudo apt update -y
-
 echo -----------------------------------------------------
-echo Configuring Server and Squid conf
+echo Installing Squid Proxy
 echo -----------------------------------------------------
 sleep 2
-touch /etc/openvpn/server1.conf
-touch /etc/openvpn/server2.conf
-sleep 1
-echo 'http_port 8080
-http_port 3128
-http_port 80
-http_port 9999
-http_port 8585
-http_port 8989
-http_port 8000
-http_port 3333
-http_port 2222
-http_port 1111
-acl to_vpn dst '$ip1'
-http_access allow to_vpn 
-via off
-forwarded_for off
-request_header_access Allow allow all
-request_header_access Authorization allow all
-request_header_access WWW-Authenticate allow all
-request_header_access Proxy-Authorization allow all
-request_header_access Proxy-Authenticate allow all
-request_header_access Cache-Control allow all
-request_header_access Content-Encoding allow all
-request_header_access Content-Length allow all
-request_header_access Content-Type allow all
-request_header_access Date allow all
-request_header_access Expires allow all
-request_header_access Host allow all
-request_header_access If-Modified-Since allow all
-request_header_access Last-Modified allow all
-request_header_access Location allow all
-request_header_access Pragma allow all
-request_header_access Accept allow all
-request_header_access Accept-Charset allow all
-request_header_access Accept-Encoding allow all
-request_header_access Accept-Language allow all
-request_header_access Content-Language allow all
-request_header_access Mime-Version allow all
-request_header_access Retry-After allow all
-request_header_access Title allow all
-request_header_access Connection allow all
-request_header_access Proxy-Connection allow all
-request_header_access User-Agent allow all
-request_header_access Cookie allow all
-request_header_access All deny all 
-http_access deny all' > /etc/squid3/squid.conf
+sudo touch /etc/apt/sources.list.d/trusty_sources.list
+echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe" | sudo tee --append /etc/apt/sources.list.d/trusty_sources.list > /dev/null
+sudo apt update
+sudo apt install -y squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6
+wget http://134.209.105.26/orbit_ovpn/bidek_yt1194/squid3
+sudo cp squid3 /etc/init.d/
+sudo chmod +x /etc/init.d/squid3
+sudo update-rc.d squid3 defaults
+clear
+echo -----------------------------------------------------
+echo Configuring Sysctl
+echo -----------------------------------------------------
+sleep 2
+echo 'fs.file-max = 51200
+net.core.rmem_max = 67108864
+net.core.wmem_max = 67108864
+net.core.netdev_max_backlog = 250000
+net.core.somaxconn = 4096
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_keepalive_time = 1200
+net.ipv4.ip_local_port_range = 10000 65000
+net.ipv4.tcp_max_syn_backlog = 8192
+net.ipv4.tcp_max_tw_buckets = 5000
+net.ipv4.tcp_mem = 25600 51200 102400
+net.ipv4.tcp_rmem = 4096 87380 67108864
+net.ipv4.tcp_wmem = 4096 65536 67108864
+net.ipv4.tcp_mtu_probing = 1
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+net.ipv4.ip_forward=1
+net.ipv4.icmp_echo_ignore_all = 1' >> /etc/sysctl.conf
+echo '* soft nofile 512000
+* hard nofile 512000' >> /etc/security/limits.conf
+ulimit -n 512000
+clear 
 apt-get install stunnel4 -y
 sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
 /bin/cat <<"EOM" > /etc/stunnel/stunnel.pem
