@@ -281,21 +281,57 @@ sudo touch /etc/apt/sources.list.d/trusty_sources.list
 echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe" | sudo tee --append /etc/apt/sources.list.d/trusty_sources.list > /dev/null
 sudo apt update -y
 
-apt-get install squid -y
-rm -f /etc/squid/squid.*
-cat <<'SquidProxy' > /etc/squid/squid.conf
-acl VPN dst IP-ADDRESS/32
-http_access allow VPN
-http_access deny all
-http_port 0.0.0.0:8080
-http_port 0.0.0.0:3128
-acl bonv src 0.0.0.0/0.0.0.0
-no_cache deny bonv
-dns_nameservers 1.1.1.1 1.0.0.1
-visible_hostname localhost
-SquidProxy
-sed -i "s|IP-ADDRESS|$MYIP|g" /etc/squid/squid.conf
-
+echo -----------------------------------------------------
+echo Configuring Server and Squid conf
+echo -----------------------------------------------------
+sleep 2
+touch /etc/openvpn/server1.conf
+touch /etc/openvpn/server2.conf
+sleep 1
+echo 'http_port 8080
+http_port 3128
+http_port 80
+http_port 9999
+http_port 8585
+http_port 8989
+http_port 8000
+http_port 3333
+http_port 2222
+http_port 1111
+acl to_vpn dst '$ip1'
+http_access allow to_vpn 
+via off
+forwarded_for off
+request_header_access Allow allow all
+request_header_access Authorization allow all
+request_header_access WWW-Authenticate allow all
+request_header_access Proxy-Authorization allow all
+request_header_access Proxy-Authenticate allow all
+request_header_access Cache-Control allow all
+request_header_access Content-Encoding allow all
+request_header_access Content-Length allow all
+request_header_access Content-Type allow all
+request_header_access Date allow all
+request_header_access Expires allow all
+request_header_access Host allow all
+request_header_access If-Modified-Since allow all
+request_header_access Last-Modified allow all
+request_header_access Location allow all
+request_header_access Pragma allow all
+request_header_access Accept allow all
+request_header_access Accept-Charset allow all
+request_header_access Accept-Encoding allow all
+request_header_access Accept-Language allow all
+request_header_access Content-Language allow all
+request_header_access Mime-Version allow all
+request_header_access Retry-After allow all
+request_header_access Title allow all
+request_header_access Connection allow all
+request_header_access Proxy-Connection allow all
+request_header_access User-Agent allow all
+request_header_access Cookie allow all
+request_header_access All deny all 
+http_access deny all' > /etc/squid3/squid.conf
 apt-get install stunnel4 -y
 sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
 /bin/cat <<"EOM" > /etc/stunnel/stunnel.pem
