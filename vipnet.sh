@@ -1,117 +1,48 @@
-#!/bin/bash
+apt-get update -y
 
-#Database Details
-HOST='104.218.54.211';
-USER='atelprov_atervg';
-PASS='@@Alaminbd';
-DBNAME='atelprov_atervg';
-
-echo -e "\e[1;32m Installing Server \033[0m"
-sleep 3
-
-echo -e "\033[01;31m Updating System \033[0m"
-
-apt-get update -y > /dev/null 2>&1
-chmod -x /etc/update-motd.d/*
-apt-get install inxi screenfetch ansiweather -y  > /dev/null 2>&1
-
-/bin/cat <<"EOM" >/etc/update-motd.d/01-custom
-#!/bin/sh
-/usr/bin/screenfetch
-echo
-echo "SYSTEM DISK USAGE"
-export TERM=xterm; inxi -D
-echo
-echo "CURRENT WEATHER AT THE LOCATION"
-ansiweather -l manila
-EOM
-
-chmod +x /etc/update-motd.d/01-custom
-
-function ip_address(){
-  IP="$( ip addr | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -E -v "^192\.168|^172\.1[6-9]\.|^172\.2[0-9]\.|^172\.3[0-2]\.|^10\.|^127\.|^255\.|^0\." | head -n 1 )"
-  [ -z "${IP}" ] && IP="$( curl -4 -s ipv4.icanhazip.com )"
-  [ -z "${IP}" ] && IP="$( curl -4 -s ipinfo.io/ip )"
-  [ -n "${IP}" ] && echo "${IP}" || echo
-  local IP
-} 
-MYIP=$(ip_address)
-
-echo -e "\e[1;32m Done Updating \033[0m"
-sleep 2
-
-echo -e "\033[01;31m Allowing Downgrades \033[0m"
-DEBIAN_FRONTEND=noninteractive apt-get full-upgrade -q -y -u  -o Dpkg::Options::="--force-confdef" --allow-downgrades --allow-remove-essential --allow-change-held-packages --allow-unauthenticated > /dev/null 2>&1
-echo -e "\e[1;32m Done Allowing Downgrades  \033[0m"
-sleep 2
-
-echo -e "\033[01;31m Installing Packages \033[0m"
-apt install mysql-client php php-mysqli php-mysql php-gd php-mbstring -y
-apt install php-ldap php-odbc php-pear php-xml php-xmlrpc php-mbstring php-snmp php-soap -y
-apt install apache2 sudo nano fail2ban unzip python build-essential curl build-essential libwrap0-dev libpam0g-dev libdbus-1-dev libreadline-dev libnl-route-3-dev libprotobuf-c0-dev libpcl1-dev libopts25-dev autogen libgnutls28-dev libseccomp-dev libhttp-parser-dev php libapache2-mod-php -y
-apt install screen openvpn easy-rsa -y
-echo -e "\e[1;32m Done Installing Packages  \033[0m"
-sleep 2
-
-echo -e "\033[01;31m Compiling Openvpn Files \033[0m"
+DEBIAN_FRONTEND=noninteractive apt-get full-upgrade -q -y -u  -o Dpkg::Options::="--force-confdef" --allow-downgrades --allow-remove-essential --allow-change-held-packages --allow-unauthenticated
+apt-get install screen sudo mysql-client nano fail2ban unzip apache2 build-essential curl build-essential libwrap0-dev libpam0g-dev libdbus-1-dev libreadline-dev libnl-route-3-dev libprotobuf-c0-dev libpcl1-dev libopts25-dev autogen libgnutls28-dev libseccomp-dev libhttp-parser-dev php libapache2-mod-php -y
+apt-get install openvpn easy-rsa -y
+sed -i 's/Listen 80/Listen 81/g' /etc/apache2/ports.conf
+service apache2 restart
 mkdir -p /etc/openvpn/easy-rsa/keys
 mkdir -p /etc/openvpn/login
 mkdir -p /etc/openvpn/radius
 mkdir -p /var/www/html/stat
 touch /etc/openvpn/server.conf
 touch /etc/openvpn/server2.conf
-touch /etc/openvpn/server3.conf
 
-echo 'mode server 
-tls-server 
-port 55 
-proto udp 
-dev tun
-keepalive 1 180
-max-clients 1000
-resolv-retry infinite 
-ca /etc/openvpn/easy-rsa/keys/ca.crt 
-cert /etc/openvpn/easy-rsa/keys/server.crt 
-key /etc/openvpn/easy-rsa/keys/server.key 
-dh /etc/openvpn/easy-rsa/keys/dh2048.pem 
-client-cert-not-required 
-username-as-common-name 
-auth-user-pass-verify "/etc/openvpn/login/auth_vpn" via-env # 
-tmp-dir "/etc/openvpn/" # 
-server 172.20.0.0 255.255.255.0
-push "redirect-gateway def1" 
-push "dhcp-option DNS 8.8.8.8"
-push "dhcp-option DNS 8.8.4.4"
-push "sndbuf 393216"
-push "rcvbuf 393216"
-tun-mtu 1400 
-mssfix 1360
-verb 3
-#comp-lzo
-script-security 3
-up /etc/openvpn/update-resolv-conf                                                                                      
-down /etc/openvpn/update-resolv-conf
-client-connect /etc/openvpn/login/connect.sh
-client-disconnect /etc/openvpn/login/disconnect.sh
-log server_log
-status /var/www/html/stat/udpstatus.txt
-ifconfig-pool-persist /var/www/html/stat/ipp.txt' > /etc/openvpn/server.conf
+/bin/cat <<"EOM" >/etc/openvpn/login/auth_vpn
+#!/bin/bash
+username=`head -n1 $1 | tail -1`   
+password=`head -n2 $1 | tail -1`
+
+HOST='104.218.54.211'
+USER='atelprov_atervg'
+PASS='@@Alaminbd'
+DB='atelprov_atervg'
+
+Query="SELECT user_name FROM users WHERE user_name='$username' AND user_encryptedPass=md5('$password') AND is_freeze='0' AND user_duration > 0"
+user_name=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
+[ "$user_name" != '' ] && [ "$user_name" = "$username" ] && echo "user : $username" && echo 'authentication ok.' && exit 0 || echo 'authentication failed.'; exit 1
+EOM
+chmod +x /etc/openvpn/login/auth_vpn
 
 echo 'mode server 
 tls-server 
 port 1194
-proto tcp
+proto tcp 
 dev tun
 keepalive 1 180
-max-clients 1000
 resolv-retry infinite 
+max-clients 1000
 ca /etc/openvpn/easy-rsa/keys/ca.crt 
 cert /etc/openvpn/easy-rsa/keys/server.crt 
 key /etc/openvpn/easy-rsa/keys/server.key 
 dh /etc/openvpn/easy-rsa/keys/dh2048.pem 
 client-cert-not-required 
 username-as-common-name 
-auth-user-pass-verify "/etc/openvpn/login/auth_vpn" via-env # 
+auth-user-pass-verify "/etc/openvpn/login/auth_vpn" via-file # 
 tmp-dir "/etc/openvpn/" # 
 server 10.8.0.0 255.255.255.0
 push "redirect-gateway def1" 
@@ -122,31 +53,28 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-#comp-lzo
-script-security 3
+comp-lzo
+script-security 2
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
-client-connect /etc/openvpn/login/connect.sh
-client-disconnect /etc/openvpn/login/disconnect.sh
-log server2_log
-status /var/www/html/stat/status.txt
-ifconfig-pool-persist /var/www/html/stat/ipp.txt' > /etc/openvpn/server2.conf
+status /var/www/html/stat/udpstatus2.txt
+ifconfig-pool-persist /var/www/html/stat/ipp.txt' > /etc/openvpn/server.conf
 
 echo 'mode server 
 tls-server 
-port 1147
-proto tcp
+port 55
+proto udp 
 dev tun
 keepalive 1 180
-max-clients 1000
 resolv-retry infinite 
+max-clients 1000
 ca /etc/openvpn/easy-rsa/keys/ca.crt 
 cert /etc/openvpn/easy-rsa/keys/server.crt 
 key /etc/openvpn/easy-rsa/keys/server.key 
 dh /etc/openvpn/easy-rsa/keys/dh2048.pem 
 client-cert-not-required 
 username-as-common-name 
-auth-user-pass-verify "/etc/openvpn/login/auth_vpn" via-env # 
+auth-user-pass-verify "/etc/openvpn/login/auth_vpn" via-file # 
 tmp-dir "/etc/openvpn/" # 
 server 10.9.0.0 255.255.255.0
 push "redirect-gateway def1" 
@@ -157,63 +85,12 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-#comp-lzo
-script-security 3
+comp-lzo
+script-security 2
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
-status /var/www/html/stat/udpstatus2.txt
-client-connect /etc/openvpn/login/connect.sh
-client-disconnect /etc/openvpn/login/disconnect.sh
-log server3_log
-ifconfig-pool-persist /var/www/html/stat/ipp.txt' > /etc/openvpn/server3.conf
-
-cat <<\EOM >/etc/openvpn/login/config.sh
-#!/bin/bash
-HOST='DBHOST'
-USER='DBUSER'
-PASS='DBPASS'
-DB='DBNAME'
-EOM
-
-sed -i "s|DBHOST|$HOST|g" /etc/openvpn/login/config.sh
-sed -i "s|DBUSER|$USER|g" /etc/openvpn/login/config.sh
-sed -i "s|DBPASS|$PASS|g" /etc/openvpn/login/config.sh
-sed -i "s|DBNAME|$DBNAME|g" /etc/openvpn/login/config.sh
-
-/bin/cat <<"EOM" >/etc/openvpn/login/auth_vpn
-#!/bin/bash
-. /etc/openvpn/login/config.sh
-Query="SELECT user_name FROM users WHERE user_name='$username' AND user_encryptedPass=md5('$password') AND is_freeze='0' AND user_duration > 0"
-user_name=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
-[ "$user_name" != '' ] && [ "$user_name" = "$username" ] && echo "user : $username" && echo 'authentication ok.' && exit 0 || echo 'authentication failed.'; exit 1
-EOM
-
-#client-connect file
-cat <<'LENZ05' >/etc/openvpn/login/connect.sh
-#!/bin/bash
-
-tm="$(date +%s)"
-dt="$(date +'%Y-%m-%d %H:%M:%S')"
-timestamp="$(date +'%FT%TZ')"
-
-. /etc/openvpn/login/config.sh
-
-##set status online to user connected
-mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_active='1' AND device_connected='1' WHERE user_name='$common_name' "
-
-LENZ05
-
-#TCP client-disconnect file
-cat <<'LENZ06' >/etc/openvpn/login/disconnect.sh
-#!/bin/bash
-tm="$(date +%s)"
-dt="$(date +'%Y-%m-%d %H:%M:%S')"
-timestamp="$(date +'%FT%TZ')"
-
-. /etc/openvpn/login/config.sh
-
-mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_active='0' WHERE user_name='$common_name' "
-LENZ06
+status /var/www/html/stat/udpstatus.txt
+ifconfig-pool-persist /var/www/html/stat/ipp.txt' > /etc/openvpn/server2.conf
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/ca.crt
 -----BEGIN CERTIFICATE-----
@@ -381,31 +258,350 @@ EOF
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/dh2048.pem
 -----BEGIN DH PARAMETERS-----
-MIIBCAKCAQEAv4qM2EbvKNExWO4yYQCJ5d7/coGMSI2TVMm8LWNXlArbggOGEEMS
-WiYaUDVThjgz2ct+HUPuLsHWN2k0OLe/p2rbS0AlQ08ZkOoL7U5aqlUb5YK+iHli
-i3VugnELm1r8OJW2FIK3N/SeE6GaHtp71ZfAjkxNdwvxomjD0V/j7hNoV8cYWur8
-cyYWBoMfQMkbTy2snGfBqQTcP3tnbBcPRTumTSFDyQ9c21syKggfxnT1r3CEQNlJ
-mqSURBYIq+kv8MNjs7C8mQ9IpPZVkeBMNVGxPoQ9QasiotHdeWq4hGMxO3/3HGII
-UBBXbEFgkbLoIxA9WUheh+nBVRGDoGgrewIBAg==
+MIIBCAKCAQEA1HeLrJUhIRQIGcVoMns4SvouSaPJ4xXC0Rsfq0ChoX3E2jtCtCrK
+OT+0MFj3XY9RdhhqGVsPujE2B0bhqgN/xJk0+qHJPOt9HJA+yJ2dQmApQ587khyr
+UgzcfPQWuu1djQZWdZjU60QKPSW20sYc5haVrJL3X5wbLBn/TymNwIFsve1Pevc3
+lk1ZZMV0eHoPt3jF8KwqwD3mxLqVBS8vmfVXGdmN+isj/ElNIH5IWRvFCKwRBe8e
+6hul1tMErmuk+XOV/bXeZaiUMAH4xJuK2Yk6ddEOPtVOLG35CnhcoYKGHFxacb5k
+Pxt4S4N3wjL2n0bU0DDi/8MDLjtZDjuTOwIBAg==
 -----END DH PARAMETERS-----
 EOF
 
 chmod 755 /etc/openvpn/server.conf
 chmod 755 /etc/openvpn/server2.conf
-chmod 755 /etc/openvpn/server3.conf
-chmod 755 /etc/openvpn/login/connect.sh
-chmod 755 /etc/openvpn/login/disconnect.sh
-chmod 755 /etc/openvpn/login/config.sh
 chmod 755 /etc/openvpn/login/auth_vpn
 touch /var/www/html/stat/status.txt
 touch /var/www/html/stat/udpstatus.txt
 touch /var/www/html/stat/udpstatus2.txt
 touch /var/www/html/stat/ipp.txt
 chmod 755 /var/www/html/stat/*
-echo -e "\e[1;32m Done Creating Openvpn Files  \033[0m"
-sleep 2
 
-echo -e "\033[01;31m Configure Sysctl \033[0m"
+
+sudo touch /etc/apt/sources.list.d/trusty_sources.list
+echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe" | sudo tee --append /etc/apt/sources.list.d/trusty_sources.list > /dev/null
+sudo apt update -y
+
+sudo apt install -y squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6
+/bin/cat <<"EOM" >/etc/init.d/squid3
+#! /bin/sh
+#
+# squid		Startup script for the SQUID HTTP proxy-cache.
+#
+# Version:	@(#)squid.rc  1.0  07-Jul-2006  luigi@debian.org
+#
+### BEGIN INIT INFO
+# Provides:          squid
+# Required-Start:    $network $remote_fs $syslog
+# Required-Stop:     $network $remote_fs $syslog
+# Should-Start:      $named
+# Should-Stop:       $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Squid HTTP Proxy version 3.x
+### END INIT INFO
+
+NAME=squid3
+DESC="Squid HTTP Proxy"
+DAEMON=/usr/sbin/squid3
+PIDFILE=/var/run/$NAME.pid
+CONFIG=/etc/squid3/squid.conf
+SQUID_ARGS="-YC -f $CONFIG"
+
+[ ! -f /etc/default/squid ] || . /etc/default/squid
+
+. /lib/lsb/init-functions
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+[ -x $DAEMON ] || exit 0
+
+ulimit -n 65535
+
+find_cache_dir () {
+	w=" 	" # space tab
+        res=`$DAEMON -k parse -f $CONFIG 2>&1 |
+		grep "Processing:" |
+		sed s/.*Processing:\ // |
+		sed -ne '
+			s/^['"$w"']*'$1'['"$w"']\+[^'"$w"']\+['"$w"']\+\([^'"$w"']\+\).*$/\1/p;
+			t end;
+			d;
+			:end q'`
+        [ -n "$res" ] || res=$2
+        echo "$res"
+}
+
+grepconf () {
+	w=" 	" # space tab
+        res=`$DAEMON -k parse -f $CONFIG 2>&1 |
+		grep "Processing:" |
+		sed s/.*Processing:\ // |
+		sed -ne '
+			s/^['"$w"']*'$1'['"$w"']\+\([^'"$w"']\+\).*$/\1/p;
+			t end;
+			d;
+			:end q'`
+	[ -n "$res" ] || res=$2
+	echo "$res"
+}
+
+create_run_dir () {
+	run_dir=/var/run/squid3
+	usr=`grepconf cache_effective_user proxy`
+	grp=`grepconf cache_effective_group proxy`
+
+	if [ "$(dpkg-statoverride --list $run_dir)" = "" ] &&
+	   [ ! -e $run_dir ] ; then
+		mkdir -p $run_dir
+	  	chown $usr:$grp $run_dir
+		[ -x /sbin/restorecon ] && restorecon $run_dir
+	fi
+}
+
+start () {
+	cache_dir=`find_cache_dir cache_dir`
+	cache_type=`grepconf cache_dir`
+	run_dir=/var/run/squid3
+
+	#
+	# Create run dir (needed for several workers on SMP)
+	#
+	create_run_dir
+
+	#
+	# Create spool dirs if they don't exist.
+	#
+	if test -d "$cache_dir" -a ! -d "$cache_dir/00"
+	then
+		log_warning_msg "Creating $DESC cache structure"
+		$DAEMON -z -f $CONFIG
+		[ -x /sbin/restorecon ] && restorecon -R $cache_dir
+	fi
+
+	umask 027
+	ulimit -n 65535
+	cd $run_dir
+	start-stop-daemon --quiet --start \
+		--pidfile $PIDFILE \
+		--exec $DAEMON -- $SQUID_ARGS < /dev/null
+	return $?
+}
+
+stop () {
+	PID=`cat $PIDFILE 2>/dev/null`
+	start-stop-daemon --stop --quiet --pidfile $PIDFILE --exec $DAEMON
+	#
+	#	Now we have to wait until squid has _really_ stopped.
+	#
+	sleep 2
+	if test -n "$PID" && kill -0 $PID 2>/dev/null
+	then
+		log_action_begin_msg " Waiting"
+		cnt=0
+		while kill -0 $PID 2>/dev/null
+		do
+			cnt=`expr $cnt + 1`
+			if [ $cnt -gt 24 ]
+			then
+				log_action_end_msg 1
+				return 1
+			fi
+			sleep 5
+			log_action_cont_msg ""
+		done
+		log_action_end_msg 0
+		return 0
+	else
+		return 0
+	fi
+}
+
+cfg_pidfile=`grepconf pid_filename`
+if test "${cfg_pidfile:-none}" != "none" -a "$cfg_pidfile" != "$PIDFILE"
+then
+	log_warning_msg "squid.conf pid_filename overrides init script"
+	PIDFILE="$cfg_pidfile"
+fi
+
+case "$1" in
+    start)
+	res=`$DAEMON -k parse -f $CONFIG 2>&1 | grep -o "FATAL: .*"`
+	if test -n "$res";
+	then
+		log_failure_msg "$res"
+		exit 3
+	else
+		log_daemon_msg "Starting $DESC" "$NAME"
+		if start ; then
+			log_end_msg $?
+		else
+			log_end_msg $?
+		fi
+	fi
+	;;
+    stop)
+	log_daemon_msg "Stopping $DESC" "$NAME"
+	if stop ; then
+		log_end_msg $?
+	else
+		log_end_msg $?
+	fi
+	;;
+    reload|force-reload)
+	res=`$DAEMON -k parse -f $CONFIG 2>&1 | grep -o "FATAL: .*"`
+	if test -n "$res";
+	then
+		log_failure_msg "$res"
+		exit 3
+	else
+		log_action_msg "Reloading $DESC configuration files"
+	  	start-stop-daemon --stop --signal 1 \
+			--pidfile $PIDFILE --quiet --exec $DAEMON
+		log_action_end_msg 0
+	fi
+	;;
+    restart)
+	res=`$DAEMON -k parse -f $CONFIG 2>&1 | grep -o "FATAL: .*"`
+	if test -n "$res";
+	then
+		log_failure_msg "$res"
+		exit 3
+	else
+		log_daemon_msg "Restarting $DESC" "$NAME"
+		stop
+		if start ; then
+			log_end_msg $?
+		else
+			log_end_msg $?
+		fi
+	fi
+	;;
+    status)
+	status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit 3
+	;;
+    *)
+	echo "Usage: /etc/init.d/$NAME {start|stop|reload|force-reload|restart|status}"
+	exit 3
+	;;
+esac
+
+exit 0
+EOM
+
+sudo chmod +x /etc/init.d/squid3
+sudo update-rc.d squid3 defaults
+
+echo "http_port 8080
+acl to_vpn dst `curl ipinfo.io/ip`
+http_access allow to_vpn 
+via off
+forwarded_for off
+request_header_access Allow allow all
+request_header_access Authorization allow all
+request_header_access WWW-Authenticate allow all
+request_header_access Proxy-Authorization allow all
+request_header_access Proxy-Authenticate allow all
+request_header_access Cache-Control allow all
+request_header_access Content-Encoding allow all
+request_header_access Content-Length allow all
+request_header_access Content-Type allow all
+request_header_access Date allow all
+request_header_access Expires allow all
+request_header_access Host allow all
+request_header_access If-Modified-Since allow all
+request_header_access Last-Modified allow all
+request_header_access Location allow all
+request_header_access Pragma allow all
+request_header_access Accept allow all
+request_header_access Accept-Charset allow all
+request_header_access Accept-Encoding allow all
+request_header_access Accept-Language allow all
+request_header_access Content-Language allow all
+request_header_access Mime-Version allow all
+request_header_access Retry-After allow all
+request_header_access Title allow all
+request_header_access Connection allow all
+request_header_access Proxy-Connection allow all
+request_header_access User-Agent allow all
+request_header_access Cookie allow all
+request_header_access All deny all 
+http_access deny all"| sudo tee /etc/squid3/squid.conf
+
+apt-get install stunnel4 -y
+sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
+/bin/cat <<"EOM" > /etc/stunnel/stunnel.pem
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpQIBAAKCAQEAyN+jQb8vvS1jwbQSXAP9H0alRxuXuijhIp3u1gePGBsGLGg8
+CWQrdhbB40W7Ov2xzg4KyiRwLgcfnOP2tHvtsN7BzC8DWrqqZsNyENDyIs3sX5oc
++JGLQZJiv2QSAP3N/4/UAAswUnGRW1TzQFXISSVeiScBsB96LoVLiPdA1e4Hhjkb
+vggLOHHTcXqc1BBzIt9eg672O+yiILsOFuYPGh3TBwVZ0DvKYZocEsJ/RExOuAID
+x0+THlpyO3PZhIo3EN5BVCmBcsUboByH9/Lsh+15tJqpvM8uiB9pjxlWUiRNiHjm
+J5+pOWX4FpGlgrJUYSSsUUddXmPVWAj1BeQ2GwIDAQABAoIBAH7ISC5zERqBz3iu
+wve4vMZEvISI8dbZfl9u9xO3aaV5SQg2Mc5rntLFwlJD7Mxq2xKG4mB7ZyJl9Jn9
+d/SqU3dS4VaSRbe6IVsC+LeMaYd2GT6t8qMgmZglYJYT/xkJGD+488GjTjh63Zeb
+onx0qBkisOw35mTXOTKrhuVHyXA70dD1an0fXi6tiNkIT4AVwLgqJuFxE0seePlN
+Y35jZF4JvX8hOvkSshkzxNWSIs2LOOCJL7dH90FYvUYA/kvW+64O7pouA/p/VkYD
+rO0fYgJmureiUZfwEVJKfnBgdhIbStA3lRxDzDmxr1BBVFaraSZ+12/jQVEXOaRb
+ErovK6ECgYEA5nV12egMRn3l3MItWmcURIDtTU8cy3WreP2zTzx9RZDs3Rw2HEbR
+0jyLzJOHfyFdyGrZtbUAa/LoOKT2YvPKQ2P4k4ZFbYcnl7cgAL28CrpZgNZXoEaL
+sMf6Qp6PG+VUSFoFcOi/GM2c4ZypVOR5MwGbfpJ4fusekxQiTijWs4cCgYEA3yLK
+Kt8bXHgg7B92mTFEKsiYrgk5SgPcYQ/HxYOMS3hrI8J3JWkMOWCCAbS1nSPPd0BY
+jXGL/LSRmWA8bX/objwq8Q8YDTuuDCIPsh/SoFZsdHWc0ZlOv1BsWGijJGa21n64
+Ja5r3LWSH6YLCy2PmoQzBDaCtmr/rZWXPaS4tc0CgYEAre9jJjab5SwqK6amQj/g
+LR+9eobGLc0+wM+B4MC/r5yFGRCsykStIeaugJWsQ0g0lwoGDL1ydwbbO71NdDuZ
+oak3OGizx8mlGT2OOuD4poQk/zdG5WG5FpCoElXHnv9D0GOZDbGsYRT2XdU2fCsA
+Sn3hFPOJXAkqh0k/5wutl8sCgYEA2aXAluK6eI7AZjEmaLTSbfzuWEus8tIjQxW2
+YaU30mGp9952gyoc/1ZwWSOgRp+ofQRpm8XWqu6iWn2xU4mA+Q19QVbcugOteC49
+Kxy5QSYrcclK5nNoiVnz5KRkBVyfGUfPbQneMhF1b6NxgDy3pxst+/0DsNVbgUC5
+niou9T0CgYEAkTXYooaf7JTAMlu/wLunkT0ZWKL/bU4ZgOFVFnF2gdfWJnHTMSu5
+PtxyjisZJNbON6xW0pIjcTuUQCIpL0LoZ7qd5zi5QqISb+eKzK8ENMxgnV7MEx78
+lufFKJYrjhC8j9pwY5pAR5uw2HKMS34IqLXct6NypoEYsJ48YDfA0Qw=
+-----END RSA PRIVATE KEY-----
+-----BEGIN CERTIFICATE-----
+MIIEATCCAumgAwIBAgIJAPDuiksIWVs2MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYD
+VQQGEwJQSDESMBAGA1UECAwJU1RST05HVlBOMRIwEAYDVQQHDAlTVFJPTkdWUE4x
+EjAQBgNVBAoMCVNUUk9OR1ZQTjESMBAGA1UECwwJU1RST05HVlBOMRIwEAYDVQQD
+DAlTVFJPTkdWUE4xIzAhBgkqhkiG9w0BCQEWFHN0cm9uZy12cG5AZ21haWwuY29t
+MB4XDTE4MDcwMzA1MTM0MVoXDTIxMDcwMjA1MTM0MVowgZYxCzAJBgNVBAYTAlBI
+MRIwEAYDVQQIDAlTVFJPTkdWUE4xEjAQBgNVBAcMCVNUUk9OR1ZQTjESMBAGA1UE
+CgwJU1RST05HVlBOMRIwEAYDVQQLDAlTVFJPTkdWUE4xEjAQBgNVBAMMCVNUUk9O
+R1ZQTjEjMCEGCSqGSIb3DQEJARYUc3Ryb25nLXZwbkBnbWFpbC5jb20wggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDI36NBvy+9LWPBtBJcA/0fRqVHG5e6
+KOEine7WB48YGwYsaDwJZCt2FsHjRbs6/bHODgrKJHAuBx+c4/a0e+2w3sHMLwNa
+uqpmw3IQ0PIizexfmhz4kYtBkmK/ZBIA/c3/j9QACzBScZFbVPNAVchJJV6JJwGw
+H3ouhUuI90DV7geGORu+CAs4cdNxepzUEHMi316DrvY77KIguw4W5g8aHdMHBVnQ
+O8phmhwSwn9ETE64AgPHT5MeWnI7c9mEijcQ3kFUKYFyxRugHIf38uyH7Xm0mqm8
+zy6IH2mPGVZSJE2IeOYnn6k5ZfgWkaWCslRhJKxRR11eY9VYCPUF5DYbAgMBAAGj
+UDBOMB0GA1UdDgQWBBTxI2YSnxnuDpwgxKOUgglmgiH/vDAfBgNVHSMEGDAWgBTx
+I2YSnxnuDpwgxKOUgglmgiH/vDAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUA
+A4IBAQC30dcIPWlFfBEK/vNzG1Dx+BWkHCfd2GfmVc+VYSpmiTox13jKBOyEdQs4
+xxB7HiESKkpAjQ0YC3mjE6F53NjK0VqdfzXhopg9i/pQJiaX0KTTcWIelsJNg2aM
+s8GZ0nWSytcAqAV6oCnn+eOT/IqnO4ihgmaVIyhfYvRgXfPU/TuERtL9f8pAII44
+jAVcy60MBZ1bCwQZcToZlfWCpO/8nLg4nnv4e3W9UeC6rDgWgpI6IXS3jikN/x3P
+9JIVFcWLtsOLC+D/33jSV8XDM3qTTRv4i/M+mva6znOI89KcBjsEhX5AunSQZ4Zg
+QkQTJi/td+5kVi00NXxlHYH5ztS1
+-----END CERTIFICATE-----
+EOM
+
+echo 'cert=/etc/stunnel/stunnel.pem
+socket = a:SO_REUSEADDR=1
+socket = l:TCP_NODELAY=1
+socket = r:TCP_NODELAY=1
+client = no
+
+[openvpn]
+accept = 443
+connect = 127.0.0.1:1194'| sudo tee /etc/stunnel/stunnel.conf
+
+
+
+
+
+sudo add-apt-repository ppa:linrunner/tlp -y
+sudo apt-get update -y
+sudo apt-get install tlp tlp-rdw -y
+sudo tlp start
+
 echo 'fs.file-max = 51200
 net.core.rmem_max = 67108864
 net.core.wmem_max = 67108864
@@ -428,236 +624,318 @@ net.ipv4.icmp_echo_ignore_all = 1' >> /etc/sysctl.conf
 echo '* soft nofile 512000
 * hard nofile 512000' >> /etc/security/limits.conf
 ulimit -n 512000
+SELINUX=disabled 
+sysctl -p
 
-echo -e "\e[1;32m Done Configuring Sysctl  \033[0m"
-sleep 2
+iptables -F; iptables -X; iptables -Z
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j SNAT --to-source `curl ipecho.net/plain`
+
+sudo usermod -a -G www-data root
+sudo chgrp -R www-data /var/www
+sudo chmod -R g+w /var/www
+
+sudo timedatectl set-timezone Asia/Manila
+timedatectl
+
+sudo apt install debconf-utils -y
+
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
+sudo apt-get install iptables-persistent -y
+
+iptables-save > /etc/iptables/rules.v4 
+ip6tables-save > /etc/iptables/rules.v6
+
+apt-get install php php-mysqli php-mysql php-gd php-mbstring python -y
+apt-get install netcat lsof php php-mysqli php-mysql php-gd php-mbstring python -y
+
+cat << \socksopenvpn > /usr/local/sbin/proxy.py
+#!/usr/bin/env python3
+# encoding: utf-8
+# SocksProxy By: Ykcir Ogotip Caayon
+import socket, threading, thread, select, signal, sys, time
+from os import system
+system("clear")
+#conexao
+IP = '0.0.0.0'
+try:
+   PORT = int(sys.argv[1])
+except:
+   PORT = 8000
+PASS = ''
+BUFLEN = 8196 * 8
+TIMEOUT = 60
+MSG = 'StrongHoldVPN'
+DEFAULT_HOST = '0.0.0.0:1194'
+RESPONSE = "HTTP/1.1 200 " + str(MSG) + "\r\n\r\n"
+
+class Server(threading.Thread):
+    def __init__(self, host, port):
+        threading.Thread.__init__(self)
+        self.running = False
+        self.host = host
+        self.port = port
+        self.threads = []
+	self.threadsLock = threading.Lock()
+	self.logLock = threading.Lock()
+
+    def run(self):
+        self.soc = socket.socket(socket.AF_INET)
+        self.soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.soc.settimeout(2)
+        self.soc.bind((self.host, self.port))
+        self.soc.listen(0)
+        self.running = True
+
+        try:                    
+            while self.running:
+                try:
+                    c, addr = self.soc.accept()
+                    c.setblocking(1)
+                except socket.timeout:
+                    continue
+                
+                conn = ConnectionHandler(c, self, addr)
+                conn.start();
+                self.addConn(conn)
+        finally:
+            self.running = False
+            self.soc.close()
+            
+    def printLog(self, log):
+        self.logLock.acquire()
+        print log
+        self.logLock.release()
+	
+    def addConn(self, conn):
+        try:
+            self.threadsLock.acquire()
+            if self.running:
+                self.threads.append(conn)
+        finally:
+            self.threadsLock.release()
+                    
+    def removeConn(self, conn):
+        try:
+            self.threadsLock.acquire()
+            self.threads.remove(conn)
+        finally:
+            self.threadsLock.release()
+                
+    def close(self):
+        try:
+            self.running = False
+            self.threadsLock.acquire()
+            
+            threads = list(self.threads)
+            for c in threads:
+                c.close()
+        finally:
+            self.threadsLock.release()
+			
+
+class ConnectionHandler(threading.Thread):
+    def __init__(self, socClient, server, addr):
+        threading.Thread.__init__(self)
+        self.clientClosed = False
+        self.targetClosed = True
+        self.client = socClient
+        self.client_buffer = ''
+        self.server = server
+        self.log = 'Conexao: ' + str(addr)
+
+    def close(self):
+        try:
+            if not self.clientClosed:
+                self.client.shutdown(socket.SHUT_RDWR)
+                self.client.close()
+        except:
+            pass
+        finally:
+            self.clientClosed = True
+            
+        try:
+            if not self.targetClosed:
+                self.target.shutdown(socket.SHUT_RDWR)
+                self.target.close()
+        except:
+            pass
+        finally:
+            self.targetClosed = True
+
+    def run(self):
+        try:
+            self.client_buffer = self.client.recv(BUFLEN)
+        
+            hostPort = self.findHeader(self.client_buffer, 'X-Real-Host')
+            
+            if hostPort == '':
+                hostPort = DEFAULT_HOST
+
+            split = self.findHeader(self.client_buffer, 'X-Split')
+
+            if split != '':
+                self.client.recv(BUFLEN)
+            
+            if hostPort != '':
+                passwd = self.findHeader(self.client_buffer, 'X-Pass')
+				
+                if len(PASS) != 0 and passwd == PASS:
+                    self.method_CONNECT(hostPort)
+                elif len(PASS) != 0 and passwd != PASS:
+                    self.client.send('HTTP/1.1 400 WrongPass!\r\n\r\n')
+                if hostPort.startswith(IP):
+                    self.method_CONNECT(hostPort)
+                else:
+                   self.client.send('HTTP/1.1 403 Forbidden!\r\n\r\n')
+            else:
+                print '- No X-Real-Host!'
+                self.client.send('HTTP/1.1 400 NoXRealHost!\r\n\r\n')
+
+        except Exception as e:
+            self.log += ' - error: ' + e.strerror
+            self.server.printLog(self.log)
+	    pass
+        finally:
+            self.close()
+            self.server.removeConn(self)
+
+    def findHeader(self, head, header):
+        aux = head.find(header + ': ')
+    
+        if aux == -1:
+            return ''
+
+        aux = head.find(':', aux)
+        head = head[aux+2:]
+        aux = head.find('\r\n')
+
+        if aux == -1:
+            return ''
+
+        return head[:aux];
+
+    def connect_target(self, host):
+        i = host.find(':')
+        if i != -1:
+            port = int(host[i+1:])
+            host = host[:i]
+        else:
+            if self.method=='CONNECT':
+                port = 1194
+            else:
+                port = 22
+
+        (soc_family, soc_type, proto, _, address) = socket.getaddrinfo(host, port)[0]
+
+        self.target = socket.socket(soc_family, soc_type, proto)
+        self.targetClosed = False
+        self.target.connect(address)
+
+    def method_CONNECT(self, path):
+    	self.log += ' - CONNECT ' + path
+        self.connect_target(path)
+        self.client.sendall(RESPONSE)
+        self.client_buffer = ''
+        self.server.printLog(self.log)
+        self.doCONNECT()
+                    
+    def doCONNECT(self):
+        socs = [self.client, self.target]
+        count = 0
+        error = False
+        while True:
+            count += 1
+            (recv, _, err) = select.select(socs, [], socs, 3)
+            if err:
+                error = True
+            if recv:
+                for in_ in recv:
+		    try:
+                        data = in_.recv(BUFLEN)
+                        if data:
+			    if in_ is self.target:
+				self.client.send(data)
+                            else:
+                                while data:
+                                    byte = self.target.send(data)
+                                    data = data[byte:]
+
+                            count = 0
+			else:
+			    break
+		    except:
+                        error = True
+                        break
+            if count == TIMEOUT:
+                error = True
+
+            if error:
+                break
 
 
-echo -e "\033[01;31m Installing Stunnel \033[0m"
-apt-get install stunnel4 -y > /dev/null 2>&1
-sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
-/bin/cat <<"EOM" > /etc/stunnel/stunnel.pem
------BEGIN RSA PRIVATE KEY-----
-MIIEowIBAAKCAQEAqBptpzCvwPqN1nZHVlY2du2D/MXdiALyvPJDp1G+TKW7+FUd
-IZnW8udc6IVJZ2RZUtN/Edzvis0b2XXB9t3o6jR2CShn0uqmdTS14BjsNyrXBZRk
-8tWDZawClIWKOkSq76UpTKVOlXhq+Uk1eoT/zB5qlgaZv5L0ye3c/n/eJUzqjOgV
-Rez+5XaEyI5A4+83NxALcz10coMP4Qr4Mcp2NALPbXj4KKiIguemiaD9tgp7iQqs
-GxTxWhfvMsbYL7FcJpGwWpv5GcxeCyR+L2t/67hC7dAvB5NSnLTioD1e2qu0Zcd5
-dhII8wr/pgC+7Y2GjTtITnHIogx3Q2LzCjF4owIDAQABAoIBAQCNfcEx6l7kdYAR
-NXkSCHrLW1uu1PSD2MdrlhavrLQaW519hlaAw7YSuf6PkDCan/I3LuFTrbzJ/Z4l
-SWK7YUj8aK+5QZMyCmOVX4p+Vzvrq1lUzvSxGFoCp+d8D3KrXMTr9P5wDuu4D6Uq
-sh4bQ/ryWd+o62FZyF3V4SoT5Jicl2U1O3xC20nbZJMglXzuhQRaI3ZnuG4d0zHX
-Eonp7wbcoKbDFJyrtSDhdwS9vylm5oo02+pgUZ1ELXglHw1ezuHekSOhIJBVdrER
-3Ch9mJ0fqGQKofD1PaIGpFviBF3YJEskiVSpAAiZ5pmwFvzWxqAnlYi59nlHSvwB
-tO7n51ChAoGBANw1uwTGhnU30Xgbx0KY+3J8kGHSJZeRjhZwt4646WxDT7EkAqjg
-TovR80yNf7vVqwDt07j1Q5DNo7MVGbvyXwPaMsAXiYbBppaGRDQtp6UylIv+tmDo
-DhYEbwQSQtGsdADjvtiBqt2tYdFW+omB88ZCfEuS7va5wcneP/Xq2UTrAoGBAMNs
-snuSAzXhJaxyE6AvYFoFJxWW0H8FPhQ5g+xS+jBNpj9SbARzn7yZFRGXy2xzmbK+
-wQA3IN40upIIy8ZiTIppvi/b/O8eaQqwQzsevzENMCKNGEjsrBpQ51wwzq1ix42Y
-8Fn1AMsMaitC1YymvLOvtuIA29OBQ1a1pslrUI0pAoGAGGhcMktO2+8z6HwrudX7
-CNWFq1H/mK0pcpNLxSX5uWY8jwXOxakXC6hZr0J/xfII4jF6JiYJNyOT4WWVVJ+o
-qGSm+2Ogeq88J7L6HE5zJnxUuq+gx1zxMr+LDoh3n4Xd1btoi9bTeX6eOPXLDzK4
-MmFsJXRDyFUOhbF8pWVCb8ECgYBfYEBnoKZieGS7md1MM3MR3CvsFHPjWjqnAj8J
-aqHiSzNU+jPvpEKUeB3ZPT0xy+V6YDCvmzg2WoOn3BUf2D/E2cDReMskJLJdXhMh
-2mqzVN1mL3hntuJz4YJY8xUbd/cuezLqpHFjp8Z1IKQ6hfHYvGxENukSe6bSvcsN
-yItCqQKBgG/nF1FTFjM97x049sP7iAlxhRxg2Yi6qthvmmFo8xBnLO66CG9PEC3G
-1MYWIzB6YtJG89NFFIGog/G2Cz95JjJDLDUOO41K/z1pBnArP54jvxx+iDuZlFMB
-mWorw0zwnwbBhrQ3hH+YsQ5uI9eg7RN+8ZbmoXUweeUlzpsiaMaw
------END RSA PRIVATE KEY-----
------BEGIN CERTIFICATE-----
-MIIEHTCCAwWgAwIBAgIJAIciQafGgIDvMA0GCSqGSIb3DQEBBQUAMIGkMQswCQYD
-VQQGEwJCRDEOMAwGA1UECAwFRGhha2ExDjAMBgNVBAcMBURoYWthMRgwFgYDVQQK
-DA9BMlogU0VSVkVSUyBMVEQxFzAVBgNVBAsMDmEyenNlcnZlcnMuY29tMRswGQYD
-VQQDDBJ3d3cuYTJ6c2VydmVycy5jb20xJTAjBgkqhkiG9w0BCQEWFnN1cHBvcnRA
-YTJ6c2VydmVycy5jb20wHhcNMjAwNjI3MDQzODU5WhcNNDgwMjE2MDQzODU5WjCB
-pDELMAkGA1UEBhMCQkQxDjAMBgNVBAgMBURoYWthMQ4wDAYDVQQHDAVEaGFrYTEY
-MBYGA1UECgwPQTJaIFNFUlZFUlMgTFREMRcwFQYDVQQLDA5hMnpzZXJ2ZXJzLmNv
-bTEbMBkGA1UEAwwSd3d3LmEyenNlcnZlcnMuY29tMSUwIwYJKoZIhvcNAQkBFhZz
-dXBwb3J0QGEyenNlcnZlcnMuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
-CgKCAQEAqBptpzCvwPqN1nZHVlY2du2D/MXdiALyvPJDp1G+TKW7+FUdIZnW8udc
-6IVJZ2RZUtN/Edzvis0b2XXB9t3o6jR2CShn0uqmdTS14BjsNyrXBZRk8tWDZawC
-lIWKOkSq76UpTKVOlXhq+Uk1eoT/zB5qlgaZv5L0ye3c/n/eJUzqjOgVRez+5XaE
-yI5A4+83NxALcz10coMP4Qr4Mcp2NALPbXj4KKiIguemiaD9tgp7iQqsGxTxWhfv
-MsbYL7FcJpGwWpv5GcxeCyR+L2t/67hC7dAvB5NSnLTioD1e2qu0Zcd5dhII8wr/
-pgC+7Y2GjTtITnHIogx3Q2LzCjF4owIDAQABo1AwTjAdBgNVHQ4EFgQUgKaZRa2J
-NYxKkeTXnL1NQY5ueqowHwYDVR0jBBgwFoAUgKaZRa2JNYxKkeTXnL1NQY5ueqow
-DAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAX0kciouCCPcK3Wq9UPUY
-DrrkOD3VC469rMGZFxw9sWRO/ZYomiF391lbVJ1JYtRNQBF01YaxdSGDHYzpTfbg
-OXiuMo/s97wP67yzXbmFU9pU9767jJVDKwQXzAYmK668lloRRCzv7berxNXTOm5c
-xoa97gnLUiGMU4nQS2G4rAsF56ddk3WnuXxH/3hIVjSSIdq9eg4+fsDgxVnH2ehN
-DLkRM+jNpiLRpm9txGOTnyFAikNGOboNSDYNx9J/uM5uoPzJDOQAoW+gV7pTut3b
-I//hEv0+/RO5PEfXQkK25mpOcXgJNmxJ5UuUvm7vm5j72hzF5lT3MFYtIDwZ7Pte
-+A==
------END CERTIFICATE-----
-EOM
+
+def main(host=IP, port=PORT):
+    print "\033[0;34mâ”"*8,"\033[1;32m PROXY SOCKS","\033[0;34mâ”"*8,"\n"
+    print "\033[1;33mIP:\033[1;32m " + IP
+    print "\033[1;33mPORTA:\033[1;32m " + str(PORT) + "\n"
+    print "\033[0;34mâ”"*10,"\033[1;32m StrongHold","\033[0;34mâ”\033[1;37m"*11,"\n"
+    server = Server(IP, PORT)
+    server.start()
+    while True:
+        try:
+            time.sleep(2)
+        except KeyboardInterrupt:
+            print '\nClosing...'
+            server.close()
+            break
+if __name__ == '__main__':
+    main()
+socksopenvpn
 
 
-echo 'cert=/etc/stunnel/stunnel.pem
-socket = a:SO_REUSEADDR=1
-socket = l:TCP_NODELAY=1
-socket = r:TCP_NODELAY=1
-client = no
-[squid]
-accept = 8000
-connect = 127.0.0.1:8080
+cat << \autostart > /root/auto
+#!/bin/bash
+if nc -z localhost 80; then
+    echo "SocksProxy running"
+else
+    echo "Starting Port 80"
+    screen -dmS proxy2 python /usr/local/sbin/proxy.py 80
+fi
+autostart
 
-[openvpn]
-accept = 443
-connect = 127.0.0.1:1194'| sudo tee /etc/stunnel/stunnel.conf
-echo -e "\e[1;32m Done Installing Stunnel  \033[0m"
-sleep 2
+chmod +x /root/auto
+/root/auto;
+crontab -r
+echo "SHELL=/bin/bash
+* * * * * /bin/bash /root/auto >/dev/null 2>&1" | crontab -
 
-echo -e "\033[01;31m Configuring Iptables & Fail2ban \033[0m"
-sudo add-apt-repository ppa:linrunner/tlp -y > /dev/null 2>&1
-sudo apt-get update > /dev/null 2>&1
-sudo apt-get install tlp tlp-rdw -y > /dev/null 2>&1
-sudo tlp start > /dev/null 2>&1
 
 update-rc.d squid3 enable
 update-rc.d openvpn enable
 update-rc.d apache2 enable
 update-rc.d cron enable
 update-rc.d stunnel4 enable
-update-rc.d fail2ban enable
 update-rc.d tlp enable
-
-iptables -F; iptables -X; iptables -Z
-iptables -t nat -A POSTROUTING -s 172.20.0.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 172.20.0.0/24 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.9.0.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.9.0.0/24 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.10.0.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.10.0.0/24 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j SNAT --to-source "$(curl ipecho.net/plain)"
-sysctl -p
-
-sudo usermod -a -G www-data root
-sudo chgrp -R www-data /var/www
-sudo chmod -R g+w /var/www
-
-touch /usr/local/sbin/reboot.sh
-echo 'reboot
-' > /usr/local/sbin/reboot.sh
-touch /usr/local/sbin/ssl.sh
-echo 'service stunnel4 start
-' > /usr/local/sbin/ssl.sh
-/bin/cat <<"EOM" >/usr/local/sbin/ram.sh
-sudo sync; echo 3 > /proc/sys/vm/drop_caches
-swapoff -a && swapon -a
-echo '#' > /var/log/haproxy.log
-echo "Ram Cleaned!"
-EOM
-
-chmod +x /usr/local/sbin/ram.sh
-chmod +x /usr/local/sbin/reboot.sh
-chmod +x /usr/local/sbin/ssl.sh
-
-(crontab -l 2>/dev/null || true; echo "#
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-0 4 * * * /usr/local/sbin/reboot.sh
-*/15 * * * * /usr/local/sbin/ssl.sh
-* * * * * /usr/local/sbin/ram.sh") | crontab -
-
-service cron restart
-
-sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-sed -i 's/bantime  = 600/bantime  = 3600/g' /etc/fail2ban/jail.local
-sed -i 's/maxretry = 10/maxretry = 3/g' /etc/fail2ban/jail.local
-sed -i 's/destemail = '.*'/destemail = a2zvpn@gmail.com/g' /etc/fail2ban/jail.local
-
-sudo timedatectl set-timezone Asia/Dhaka
-timedatectl
-
-sudo apt install debconf-utils -y > /dev/null 2>&1
-
-echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
-echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
-sudo apt-get install iptables-persistent -y > /dev/null 2>&1
-
-iptables-save > /etc/iptables/rules.v4 
-ip6tables-save > /etc/iptables/rules.v6
-echo -e "\e[1;32m Configuring Done \033[0m"
-sleep 2
-
-/bin/cat <<"EOM" >/var/www/html/index.html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Design by Saudi Connect</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<link rel="stylesheet" href="https://bootswatch.com/4/slate/bootstrap.min.css" media="screen">
-<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-<style>
-    body {
-     font-family: "Press Start 2P", cursive;    
-    }
-    .fn-color {
-        color: #ff00ff;
-        background-image: -webkit-linear-gradient(92deg, #f35626, #feab3a);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        -webkit-animation: hue 5s infinite linear;
-    }
-
-    @-webkit-keyframes hue {
-      from {
-        -webkit-filter: hue-rotate(0deg);
-      }
-      to {
-        -webkit-filter: hue-rotate(-360deg);
-      }
-    }
-</style>
-</head>
-<body>
-<div class="container" style="padding-top: 50px">
-<div class="jumbotron">
-<h1 class="display-3 text-center fn-color">FIRENET SCRIPTZ</h1>
-<h4 class="text-center fn-color">Follow Us</h4>
-<p class="text-center">https://facebook.com/alaminbd17</p>
-</div>
-</div>
-</body>
-</html>
-EOM
-
-apt-get install squid -y
-rm -f /etc/squid/squid.*
-cat <<'SquidProxy' > /etc/squid/squid.conf
-acl VPN dst IP-ADDRESS/32
-http_access allow VPN
-http_access deny all
-http_port 0.0.0.0:8080
-http_port 0.0.0.0:3128
-acl bonv src 0.0.0.0/0.0.0.0
-no_cache deny bonv
-dns_nameservers 1.1.1.1 1.0.0.1
-visible_hostname localhost
-SquidProxy
-sed -i "s|IP-ADDRESS|$MYIP|g" /etc/squid/squid.conf
-
-echo -e "\033[01;31m Starting Services \033[0m"
-service openvpn start
-service squid start
+service openvpn restart
+service squid3 start
 service apache2 start
-service fail2ban start
-service stunnel4 start
-
+service stunnel4 restart
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 sed -i 's/#ForwardToWall=yes/ForwardToWall=no/g' /etc/systemd/journald.conf
-
-sudo apt-get autoremove -y > /dev/null 2>&1
-sudo apt-get clean > /dev/null 2>&1
+clear
+echo "Installation Done"
+udo apt-get clean > /dev/null 2>&1
 history -c
 cd /root || exit
 rm -f /root/installer.sh
 echo -e "\e[1;32m Installing Done \033[0m"
-echo 'root:@@F1r3n3t' | sudo chpasswd
+echo 'root:@@fuck420' | sudo chpasswd
 reboot
