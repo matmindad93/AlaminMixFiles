@@ -6,8 +6,6 @@ USER='routervp_routervp'
 PASS='@L@m1n121'
 DB='routervp_routervp'
 
-
-
 echo -e "\e[1;32m Installing Server \033[0m"
 sleep 3
 
@@ -66,7 +64,7 @@ touch /etc/openvpn/server3.conf
 
 echo 'mode server 
 tls-server 
-port 53 
+port 55 
 proto udp 
 dev tun
 keepalive 1 180
@@ -89,7 +87,7 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-comp-lzo
+#comp-lzo
 script-security 3
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
@@ -124,7 +122,7 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-comp-lzo
+#comp-lzo
 script-security 3
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
@@ -159,7 +157,7 @@ push "rcvbuf 393216"
 tun-mtu 1400 
 mssfix 1360
 verb 3
-comp-lzo
+#comp-lzo
 script-security 3
 up /etc/openvpn/update-resolv-conf                                                                                      
 down /etc/openvpn/update-resolv-conf
@@ -202,7 +200,6 @@ timestamp="$(date +'%FT%TZ')"
 
 ##set status online to user connected
 mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_active='1' AND device_connected='1' WHERE user_name='$common_name' "
-
 LENZ05
 
 #TCP client-disconnect file
@@ -219,32 +216,33 @@ LENZ06
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/ca.crt
 -----BEGIN CERTIFICATE-----
-MIIExDCCA6ygAwIBAgIJAKyvksf/QCcwMA0GCSqGSIb3DQEBCwUAMIGcMQswCQYD
-VQQGEwJVUzELMAkGA1UECBMCUEgxEDAOBgNVBAcTB01heW5pbGExDjAMBgNVBAoT
-BVRvbmRvMRQwEgYDVQQLEwtQaW5veUdyb3VuZDERMA8GA1UEAxMIVG9uZG8gQ0Ex
-DzANBgNVBCkTBnNlcnZlcjEkMCIGCSqGSIb3DQEJARYVcGlub3lncm91bmRAZ21h
-aWwuY29tMB4XDTE3MDYxNzEwMjMxM1oXDTI3MDYxNTEwMjMxM1owgZwxCzAJBgNV
-BAYTAlVTMQswCQYDVQQIEwJQSDEQMA4GA1UEBxMHTWF5bmlsYTEOMAwGA1UEChMF
-VG9uZG8xFDASBgNVBAsTC1Bpbm95R3JvdW5kMREwDwYDVQQDEwhUb25kbyBDQTEP
-MA0GA1UEKRMGc2VydmVyMSQwIgYJKoZIhvcNAQkBFhVwaW5veWdyb3VuZEBnbWFp
-bC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCrfMyxOcaPROlq
-TOrRfwixx/5vMdSyDh1b9j9zE/BDaWF1UtkZORXjI5YCdQNsk+86qHxVamZmC6jm
-Tq5sC0XrZr725/qFANvj13rw7Bt3q+/Q5lCt5zwpuaSOem6YIlvqzBYbteShEaX8
-h7ppL+bk6i+S9MOX5bc+m8zt0DwrLbC6tqBvC+1Btj8kvnhtoXI+uQoUxRa6PbsK
-DcdW1iyjcjG+ARWKEXMSOjxL3RtWfoG6sRL4mkALNH/ghejvtXjYYeU3hUDyWGGy
-QWux3WzreVYnoXyozEijwGPCCLdZ+Sdn8F4D7yXoPKsLxfqFvtt76zFVajNpszsX
-cKbiBB5JAgMBAAGjggEFMIIBATAdBgNVHQ4EFgQUAvGhH/Tis+YRCGKQLUKaMcCE
-hsgwgdEGA1UdIwSByTCBxoAUAvGhH/Tis+YRCGKQLUKaMcCEhsihgaKkgZ8wgZwx
-CzAJBgNVBAYTAlVTMQswCQYDVQQIEwJQSDEQMA4GA1UEBxMHTWF5bmlsYTEOMAwG
-A1UEChMFVG9uZG8xFDASBgNVBAsTC1Bpbm95R3JvdW5kMREwDwYDVQQDEwhUb25k
-byBDQTEPMA0GA1UEKRMGc2VydmVyMSQwIgYJKoZIhvcNAQkBFhVwaW5veWdyb3Vu
-ZEBnbWFpbC5jb22CCQCsr5LH/0AnMDAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEB
-CwUAA4IBAQCa5JUgtw6j3poZEug6cV9Z/ndYqxvYkoOLNCaMG1xZYBch061qjqB1
-8TvAqBpp4zF6w0i4P4Mwh1p+bUgOV04p7HB6aUMm14ALwn+hHhWlkVQ5bPqVEr9B
-L8/xjcbBVGj1lgv6UCjzmx1Aq+VBlvy0wU1NQT3QuQXSIpEvGMAn3ApsNMmQQ8CW
-hYWYMFbAcjF9vWi+FKoDtWQ6SyHvgcpkOuqWs4p9AEwI6WS1IpJPRiHIPYwAzA3u
-824ER9Gn4OKoBLqVyhQvW3etMjMc/baWd6p0K06NSCwZsjchD+ayf5SjfUfhYTTM
-llJ5x8d1nZT7CWpogTTvqDdK6iiKPb/+
+MIIFDDCCA/SgAwIBAgIJAPVaxZZ9crxTMA0GCSqGSIb3DQEBCwUAMIG0MQswCQYD
+VQQGEwJCRDEOMAwGA1UECBMFRGhha2ExDjAMBgNVBAcTBURoYWthMRgwFgYDVQQK
+Ew9BMlogU0VSVkVSUyBMVEQxFzAVBgNVBAsTDmEyenNlcnZlcnMuY29tMRcwFQYD
+VQQDEw5hMnpzZXJ2ZXJzLmNvbTESMBAGA1UEKRMJQkRFYXN5UlNBMSUwIwYJKoZI
+hvcNAQkBFhZzdXBwb3J0QGEyenNlcnZlcnMuY29tMB4XDTIwMDYyNjA1NDM0NloX
+DTMwMDYyNDA1NDM0NlowgbQxCzAJBgNVBAYTAkJEMQ4wDAYDVQQIEwVEaGFrYTEO
+MAwGA1UEBxMFRGhha2ExGDAWBgNVBAoTD0EyWiBTRVJWRVJTIExURDEXMBUGA1UE
+CxMOYTJ6c2VydmVycy5jb20xFzAVBgNVBAMTDmEyenNlcnZlcnMuY29tMRIwEAYD
+VQQpEwlCREVhc3lSU0ExJTAjBgkqhkiG9w0BCQEWFnN1cHBvcnRAYTJ6c2VydmVy
+cy5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCRUlPZAvENlXG
+5r1EmX2BGwECWVFW9nrnXxIfx0Ia+04tlA17TGuRmRhH3irQAXjbXr8TBkx9Ttqy
+eMdzUPzlTY8LZnVg/pwOkdxpODSB5/Icy0527d4492wbLp1XJdXJky/zEbW0jZF2
+K6nXVtBIezFni/jj4xoWCnaWAGaM1jgysa0bsxCoHCJ6pG5Ih+Q3XX03FSBGbHtq
+TebdzY5LzInckLNLA5qk39qo3PZzSPC6u2voZxqK0/Wrwa9nHPlCjX5nlOn7A+/8
+IwHrD1qM0mja7AGW6bVSC+tnc9+YYz2p1bVY9yPS9E7OoWRN64Gz5AhlZjLLREuT
+zoAZd2EnAgMBAAGjggEdMIIBGTAdBgNVHQ4EFgQU7YzIByeyPY8NFjG0ZGQb3cj0
+s/QwgekGA1UdIwSB4TCB3oAU7YzIByeyPY8NFjG0ZGQb3cj0s/ShgbqkgbcwgbQx
+CzAJBgNVBAYTAkJEMQ4wDAYDVQQIEwVEaGFrYTEOMAwGA1UEBxMFRGhha2ExGDAW
+BgNVBAoTD0EyWiBTRVJWRVJTIExURDEXMBUGA1UECxMOYTJ6c2VydmVycy5jb20x
+FzAVBgNVBAMTDmEyenNlcnZlcnMuY29tMRIwEAYDVQQpEwlCREVhc3lSU0ExJTAj
+BgkqhkiG9w0BCQEWFnN1cHBvcnRAYTJ6c2VydmVycy5jb22CCQD1WsWWfXK8UzAM
+BgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCe09DqQ/yhLffM5KCdd3UN
+W41KF32do7WVYvzKAdlXPhByuPFaBXtOadCkclRg/opj2k6RBz4hmQCCUk4AxL/o
+qG/FOseB33eWAs8GwuuocjRoUiHk6gMTNUcdGaJQASzLHU60WBIUK5enFf2m359p
+qOhty1KzLIC5rgnVAnSglC7i/3hpO+KZKO8qoMVeMNE9ppOEnuQ3gCwnSdjjxFNQ
+SgjBWmj9lzKK4js9D26CgQQiwdW+95WJqoqpO5y6Y0pVqx3xx3jsE1JokITW8zcd
+at3rXO5wG4s+N1cS/b4eRRF1wQnYZIOhsyprYYWS6fOptt1fdq3iVhYhBEUXSfFm
 -----END CERTIFICATE-----
 EOF
 
@@ -254,33 +252,33 @@ Certificate:
         Version: 3 (0x2)
         Serial Number: 1 (0x1)
     Signature Algorithm: sha256WithRSAEncryption
-        Issuer: C=US, ST=PH, L=Maynila, O=Tondo, OU=PinoyGround, CN=Tondo CA/name=server/emailAddress=pinoyground@gmail.com
+        Issuer: C=BD, ST=Dhaka, L=Dhaka, O=A2Z SERVERS LTD, OU=a2zservers.com, CN=a2zservers.com/name=BDEasyRSA/emailAddress=support@a2zservers.com
         Validity
-            Not Before: Jun 17 10:23:30 2017 GMT
-            Not After : Jun 15 10:23:30 2027 GMT
-        Subject: C=US, ST=PH, L=Maynila, O=Tondo, OU=PinoyGround, CN=server/name=server/emailAddress=pinoyground@gmail.com
+            Not Before: Jun 26 05:45:53 2020 GMT
+            Not After : Jun 24 05:45:53 2030 GMT
+        Subject: C=BD, ST=Dhaka, L=Dhaka, O=A2Z Servers Ltd, OU=A2Z Servers, CN=a2zservers.com/name=BDEasyRSA/emailAddress=support@a2zservers.com
         Subject Public Key Info:
             Public Key Algorithm: rsaEncryption
                 Public-Key: (2048 bit)
                 Modulus:
-                    00:e2:78:00:40:ca:de:85:d3:2d:63:54:cc:3c:49:
-                    72:98:a9:76:bd:1b:62:95:aa:36:1f:eb:b6:86:4b:
-                    da:a9:c0:50:7b:c0:bf:3f:6f:d4:38:32:b9:ad:33:
-                    b8:13:fb:6b:b8:41:c1:98:05:ac:3e:49:64:3e:1b:
-                    9f:8f:07:b8:b5:b6:7c:86:59:be:a3:93:31:8c:b7:
-                    77:b8:50:a4:b1:19:3b:34:a9:21:4a:a6:25:83:48:
-                    60:cb:0d:1f:13:5b:d5:af:eb:2a:1d:55:41:8d:76:
-                    c5:05:0d:98:7a:9a:f8:22:58:4c:11:01:99:e3:b3:
-                    40:0a:9d:4c:cc:8b:1e:86:bf:9b:63:26:61:19:86:
-                    5a:88:a9:99:93:66:0e:74:82:31:83:b3:7f:cc:cd:
-                    57:03:e5:5b:ce:3c:97:5d:c8:62:c8:e8:94:d8:5a:
-                    e9:a8:3b:be:ba:a6:b0:85:59:e4:10:d3:a2:c4:d3:
-                    4d:fb:8f:a9:6e:98:bb:b6:69:9d:63:c4:01:df:46:
-                    1a:5d:d2:26:b7:0f:3d:74:22:fe:bb:16:75:28:43:
-                    ec:9c:e5:ad:d4:b6:af:42:eb:26:76:c6:83:29:b9:
-                    d0:50:44:cd:f1:d1:0f:68:7b:2d:8c:86:7f:24:fc:
-                    8f:4d:05:6e:47:8b:7c:c0:04:e1:e8:c9:97:4c:bb:
-                    fe:a7
+                    00:ea:39:b8:b8:ea:cc:27:d4:97:0f:08:74:52:f6:
+                    25:19:95:e7:39:2d:c9:d5:1b:3f:10:0e:b2:94:29:
+                    c2:cc:ee:6c:a6:49:15:06:e5:24:35:41:47:26:41:
+                    ae:25:f4:77:a8:59:93:84:de:f8:05:a8:93:5d:06:
+                    21:09:7c:b6:0d:d2:a2:68:94:fd:0a:f6:71:cd:b1:
+                    65:a0:02:5a:0c:0b:33:0a:5c:06:82:c4:1f:de:70:
+                    cd:66:c6:82:27:e1:e4:3c:e4:e4:8d:e7:c8:7c:d6:
+                    68:2f:1c:d8:9c:52:02:a2:e2:0d:03:91:3b:a5:25:
+                    3f:dd:e5:07:fb:cc:90:0d:0a:ae:9d:de:97:1a:0e:
+                    5f:eb:c2:e8:8c:2b:2e:31:d6:f6:78:27:11:5d:19:
+                    40:7a:cf:2d:3d:84:fc:e6:a4:74:50:ff:c0:da:05:
+                    a1:10:ec:bc:97:5f:5e:04:ac:b1:a8:ac:97:e8:9e:
+                    5d:51:e7:67:6f:b7:52:94:08:77:2f:ed:9d:69:f0:
+                    a0:10:8d:b6:5e:f1:56:37:5d:38:58:df:6e:8d:21:
+                    76:18:d1:de:cb:96:70:07:04:0b:a3:ca:bb:c2:b4:
+                    51:50:44:7c:34:c9:95:9a:2c:01:62:aa:7a:80:01:
+                    e7:69:22:c8:6f:f4:aa:6f:76:2b:44:9d:91:71:bc:
+                    e0:39
                 Exponent: 65537 (0x10001)
         X509v3 extensions:
             X509v3 Basic Constraints: 
@@ -290,105 +288,104 @@ Certificate:
             Netscape Comment: 
                 Easy-RSA Generated Server Certificate
             X509v3 Subject Key Identifier: 
-                E0:C5:67:F2:F7:5D:B4:65:B8:71:0A:5D:58:C0:16:B5:09:D9:73:B7
+                E4:75:2E:ED:FD:F3:AB:7F:31:FB:B0:51:03:71:DE:FA:23:E5:2B:3A
             X509v3 Authority Key Identifier: 
-                keyid:02:F1:A1:1F:F4:E2:B3:E6:11:08:62:90:2D:42:9A:31:C0:84:86:C8
-                DirName:/C=US/ST=PH/L=Maynila/O=Tondo/OU=PinoyGround/CN=Tondo CA/name=server/emailAddress=pinoyground@gmail.com
-                serial:AC:AF:92:C7:FF:40:27:30
+                keyid:ED:8C:C8:07:27:B2:3D:8F:0D:16:31:B4:64:64:1B:DD:C8:F4:B3:F4
+                DirName:/C=BD/ST=Dhaka/L=Dhaka/O=A2Z SERVERS LTD/OU=a2zservers.com/CN=a2zservers.com/name=BDEasyRSA/emailAddress=support@a2zservers.com
+                serial:F5:5A:C5:96:7D:72:BC:53
 
             X509v3 Extended Key Usage: 
                 TLS Web Server Authentication
             X509v3 Key Usage: 
                 Digital Signature, Key Encipherment
-            X509v3 Subject Alternative Name: 
-                DNS:server
     Signature Algorithm: sha256WithRSAEncryption
-         3b:19:a5:22:34:0e:7b:51:12:8d:37:6e:10:19:58:d8:a1:3b:
-         a2:c5:f8:62:3b:37:1d:06:5a:f3:a6:35:bd:0f:22:61:7d:e2:
-         f3:54:00:a5:7b:9c:a7:e2:3b:e0:6f:35:a0:1d:23:02:c7:f0:
-         2b:8a:b0:51:24:2d:87:b6:5d:ce:81:4a:f2:32:dd:42:a4:b5:
-         f0:4d:1e:ac:5f:36:52:c9:c0:ba:1f:c7:3c:6a:f2:88:e1:14:
-         1b:84:e7:53:84:ee:88:15:39:10:24:bc:8d:64:ca:65:75:55:
-         0d:7d:09:dd:a3:d2:94:2b:d5:7e:46:72:70:91:69:02:a6:79:
-         58:a1:4f:1b:18:c0:9a:4b:96:16:b2:70:a5:cd:bb:bf:33:b5:
-         1a:76:51:93:8a:ca:4b:45:50:be:52:bd:28:cf:94:7e:d9:84:
-         6c:93:43:b3:d0:2f:a5:3e:32:bd:0d:46:8a:d1:46:2d:64:f0:
-         50:2f:c6:7d:54:54:88:3f:f5:02:17:71:6f:1c:4b:cd:2c:d4:
-         c0:fc:39:15:bc:46:62:36:eb:d0:fe:fc:c2:c1:f5:fb:18:6f:
-         7c:91:61:0e:2c:e1:17:08:44:9f:66:e4:d5:99:30:bf:f5:0a:
-         96:b6:1e:8f:ea:c6:bb:6b:b4:0c:82:ef:ef:85:6e:74:94:c2:
-         0c:2b:94:de
+         81:56:cf:3e:d4:5b:6a:c8:2f:37:7c:31:ba:ae:2e:0c:20:4a:
+         8a:bd:b7:35:cc:bc:47:c0:2d:b8:8c:8d:7a:9a:f2:ab:28:3d:
+         02:7a:d6:06:b8:77:71:b5:a2:40:a2:6f:1a:34:02:40:a1:d5:
+         e6:19:08:e7:08:fd:38:0b:fa:fc:b7:c7:22:9a:f3:f7:88:56:
+         a4:69:a2:df:67:4a:80:90:d8:86:b3:db:43:3b:cb:37:86:f4:
+         d9:31:7e:23:5d:9f:a3:82:14:df:eb:ae:7e:8d:76:a2:c8:29:
+         ae:2e:f3:e9:db:1d:33:34:28:bb:78:a8:97:af:46:bf:a1:1d:
+         ab:4f:2b:cf:bb:6c:64:24:13:a0:6d:4b:44:9d:05:92:fe:03:
+         f7:29:be:f5:f6:fd:62:cc:11:e9:e4:f8:6c:88:43:0a:04:fd:
+         0e:82:a2:bb:98:87:77:55:27:ae:12:30:3b:0a:37:52:fd:79:
+         e1:00:00:7f:7f:51:1b:2f:b3:5b:f3:7d:0a:78:55:22:3b:cb:
+         9a:ea:f6:f7:4e:f1:66:0c:b1:3e:5d:1e:45:3b:c5:03:3b:ae:
+         8a:bc:4f:8e:40:da:a3:b4:54:f6:f7:ef:04:fe:95:38:ca:de:
+         72:10:8a:f9:dd:a2:78:f0:a0:ae:48:84:f9:de:69:4d:05:66:
+         fb:d2:bc:fd
 -----BEGIN CERTIFICATE-----
-MIIFNTCCBB2gAwIBAgIBATANBgkqhkiG9w0BAQsFADCBnDELMAkGA1UEBhMCVVMx
-CzAJBgNVBAgTAlBIMRAwDgYDVQQHEwdNYXluaWxhMQ4wDAYDVQQKEwVUb25kbzEU
-MBIGA1UECxMLUGlub3lHcm91bmQxETAPBgNVBAMTCFRvbmRvIENBMQ8wDQYDVQQp
-EwZzZXJ2ZXIxJDAiBgkqhkiG9w0BCQEWFXBpbm95Z3JvdW5kQGdtYWlsLmNvbTAe
-Fw0xNzA2MTcxMDIzMzBaFw0yNzA2MTUxMDIzMzBaMIGaMQswCQYDVQQGEwJVUzEL
-MAkGA1UECBMCUEgxEDAOBgNVBAcTB01heW5pbGExDjAMBgNVBAoTBVRvbmRvMRQw
-EgYDVQQLEwtQaW5veUdyb3VuZDEPMA0GA1UEAxMGc2VydmVyMQ8wDQYDVQQpEwZz
-ZXJ2ZXIxJDAiBgkqhkiG9w0BCQEWFXBpbm95Z3JvdW5kQGdtYWlsLmNvbTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOJ4AEDK3oXTLWNUzDxJcpipdr0b
-YpWqNh/rtoZL2qnAUHvAvz9v1Dgyua0zuBP7a7hBwZgFrD5JZD4bn48HuLW2fIZZ
-vqOTMYy3d7hQpLEZOzSpIUqmJYNIYMsNHxNb1a/rKh1VQY12xQUNmHqa+CJYTBEB
-meOzQAqdTMyLHoa/m2MmYRmGWoipmZNmDnSCMYOzf8zNVwPlW848l13IYsjolNha
-6ag7vrqmsIVZ5BDTosTTTfuPqW6Yu7ZpnWPEAd9GGl3SJrcPPXQi/rsWdShD7Jzl
-rdS2r0LrJnbGgym50FBEzfHRD2h7LYyGfyT8j00FbkeLfMAE4ejJl0y7/qcCAwEA
-AaOCAYAwggF8MAkGA1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgZAMDQGCWCGSAGG
-+EIBDQQnFiVFYXN5LVJTQSBHZW5lcmF0ZWQgU2VydmVyIENlcnRpZmljYXRlMB0G
-A1UdDgQWBBTgxWfy9120ZbhxCl1YwBa1CdlztzCB0QYDVR0jBIHJMIHGgBQC8aEf
-9OKz5hEIYpAtQpoxwISGyKGBoqSBnzCBnDELMAkGA1UEBhMCVVMxCzAJBgNVBAgT
-AlBIMRAwDgYDVQQHEwdNYXluaWxhMQ4wDAYDVQQKEwVUb25kbzEUMBIGA1UECxML
-UGlub3lHcm91bmQxETAPBgNVBAMTCFRvbmRvIENBMQ8wDQYDVQQpEwZzZXJ2ZXIx
-JDAiBgkqhkiG9w0BCQEWFXBpbm95Z3JvdW5kQGdtYWlsLmNvbYIJAKyvksf/QCcw
-MBMGA1UdJQQMMAoGCCsGAQUFBwMBMAsGA1UdDwQEAwIFoDARBgNVHREECjAIggZz
-ZXJ2ZXIwDQYJKoZIhvcNAQELBQADggEBADsZpSI0DntREo03bhAZWNihO6LF+GI7
-Nx0GWvOmNb0PImF94vNUAKV7nKfiO+BvNaAdIwLH8CuKsFEkLYe2Xc6BSvIy3UKk
-tfBNHqxfNlLJwLofxzxq8ojhFBuE51OE7ogVORAkvI1kymV1VQ19Cd2j0pQr1X5G
-cnCRaQKmeVihTxsYwJpLlhaycKXNu78ztRp2UZOKyktFUL5SvSjPlH7ZhGyTQ7PQ
-L6U+Mr0NRorRRi1k8FAvxn1UVIg/9QIXcW8cS80s1MD8ORW8RmI269D+/MLB9fsY
-b3yRYQ4s4RcIRJ9m5NWZML/1Cpa2Ho/qxrtrtAyC7++FbnSUwgwrlN4=
+MIIFaTCCBFGgAwIBAgIBATANBgkqhkiG9w0BAQsFADCBtDELMAkGA1UEBhMCQkQx
+DjAMBgNVBAgTBURoYWthMQ4wDAYDVQQHEwVEaGFrYTEYMBYGA1UEChMPQTJaIFNF
+UlZFUlMgTFREMRcwFQYDVQQLEw5hMnpzZXJ2ZXJzLmNvbTEXMBUGA1UEAxMOYTJ6
+c2VydmVycy5jb20xEjAQBgNVBCkTCUJERWFzeVJTQTElMCMGCSqGSIb3DQEJARYW
+c3VwcG9ydEBhMnpzZXJ2ZXJzLmNvbTAeFw0yMDA2MjYwNTQ1NTNaFw0zMDA2MjQw
+NTQ1NTNaMIGxMQswCQYDVQQGEwJCRDEOMAwGA1UECBMFRGhha2ExDjAMBgNVBAcT
+BURoYWthMRgwFgYDVQQKEw9BMlogU2VydmVycyBMdGQxFDASBgNVBAsTC0EyWiBT
+ZXJ2ZXJzMRcwFQYDVQQDEw5hMnpzZXJ2ZXJzLmNvbTESMBAGA1UEKRMJQkRFYXN5
+UlNBMSUwIwYJKoZIhvcNAQkBFhZzdXBwb3J0QGEyenNlcnZlcnMuY29tMIIBIjAN
+BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6jm4uOrMJ9SXDwh0UvYlGZXnOS3J
+1Rs/EA6ylCnCzO5spkkVBuUkNUFHJkGuJfR3qFmThN74BaiTXQYhCXy2DdKiaJT9
+CvZxzbFloAJaDAszClwGgsQf3nDNZsaCJ+HkPOTkjefIfNZoLxzYnFICouINA5E7
+pSU/3eUH+8yQDQqund6XGg5f68LojCsuMdb2eCcRXRlAes8tPYT85qR0UP/A2gWh
+EOy8l19eBKyxqKyX6J5dUednb7dSlAh3L+2dafCgEI22XvFWN104WN9ujSF2GNHe
+y5ZwBwQLo8q7wrRRUER8NMmVmiwBYqp6gAHnaSLIb/Sqb3YrRJ2RcbzgOQIDAQAB
+o4IBhTCCAYEwCQYDVR0TBAIwADARBglghkgBhvhCAQEEBAMCBkAwNAYJYIZIAYb4
+QgENBCcWJUVhc3ktUlNBIEdlbmVyYXRlZCBTZXJ2ZXIgQ2VydGlmaWNhdGUwHQYD
+VR0OBBYEFOR1Lu3986t/MfuwUQNx3voj5Ss6MIHpBgNVHSMEgeEwgd6AFO2MyAcn
+sj2PDRYxtGRkG93I9LP0oYG6pIG3MIG0MQswCQYDVQQGEwJCRDEOMAwGA1UECBMF
+RGhha2ExDjAMBgNVBAcTBURoYWthMRgwFgYDVQQKEw9BMlogU0VSVkVSUyBMVEQx
+FzAVBgNVBAsTDmEyenNlcnZlcnMuY29tMRcwFQYDVQQDEw5hMnpzZXJ2ZXJzLmNv
+bTESMBAGA1UEKRMJQkRFYXN5UlNBMSUwIwYJKoZIhvcNAQkBFhZzdXBwb3J0QGEy
+enNlcnZlcnMuY29tggkA9VrFln1yvFMwEwYDVR0lBAwwCgYIKwYBBQUHAwEwCwYD
+VR0PBAQDAgWgMA0GCSqGSIb3DQEBCwUAA4IBAQCBVs8+1FtqyC83fDG6ri4MIEqK
+vbc1zLxHwC24jI16mvKrKD0CetYGuHdxtaJAom8aNAJAodXmGQjnCP04C/r8t8ci
+mvP3iFakaaLfZ0qAkNiGs9tDO8s3hvTZMX4jXZ+jghTf665+jXaiyCmuLvPp2x0z
+NCi7eKiXr0a/oR2rTyvPu2xkJBOgbUtEnQWS/gP3Kb719v1izBHp5PhsiEMKBP0O
+gqK7mId3VSeuEjA7CjdS/XnhAAB/f1EbL7Nb830KeFUiO8ua6vb3TvFmDLE+XR5F
+O8UDO66KvE+OQNqjtFT29+8E/pU4yt5yEIr53aJ48KCuSIT53mlNBWb70rz9
 -----END CERTIFICATE-----
 EOF
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/server.key
 -----BEGIN PRIVATE KEY-----
-MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDieABAyt6F0y1j
-VMw8SXKYqXa9G2KVqjYf67aGS9qpwFB7wL8/b9Q4MrmtM7gT+2u4QcGYBaw+SWQ+
-G5+PB7i1tnyGWb6jkzGMt3e4UKSxGTs0qSFKpiWDSGDLDR8TW9Wv6yodVUGNdsUF
-DZh6mvgiWEwRAZnjs0AKnUzMix6Gv5tjJmEZhlqIqZmTZg50gjGDs3/MzVcD5VvO
-PJddyGLI6JTYWumoO766prCFWeQQ06LE0037j6lumLu2aZ1jxAHfRhpd0ia3Dz10
-Iv67FnUoQ+yc5a3Utq9C6yZ2xoMpudBQRM3x0Q9oey2Mhn8k/I9NBW5Hi3zABOHo
-yZdMu/6nAgMBAAECggEAH9fduT6NQWXrKN9ghE2ThnG1l2uFViQDzkM3e/Sof1vi
-NTRp78KKpYhEYV03Ud/1Sog8b2LE0FFDfhQmQFdGmo5ZPg7aZmeo/O9DLzBvp9Mz
-ZvktDDEGb0o7CfIDX5Z3GnBHkK5PNFPx6f76ZKrrnvCpaW6/M6wdoiByDwS0ux9s
-Pr8ALFFKPgYwc5QNt/R0iFOYqQfSA3UrzdOolklbfQRB9+n5kBqQ69PlKd+JwhGy
-tO07DysEmNGlMQoNw7pm6nDVwYO+KdmFcj23jTgcgsmvdqh6ucreFYWYn9pf6wGo
-0HJ9E7J2BRXdfgZ26WdDicPONFCmuQBvsCnW+pVGiQKBgQD3Dv8W17ZtAZTwP1m3
-uNRn2mYcI4+0MufXwaT3yqQ2G8NY5kTvEeqAO/+LubzOC231FAU+359YQHK/f1X0
-NpmiGfOtu4iQxjGujBr1PndIIhJZAJYgbr9F6rMnRpcVfhTZO5e/5nr92mksMrK2
-zzZLw0QObLw0nJqnL1hrmBBH0wKBgQDqqj1EVLfTizxf8BtN7SbQqwyFgirpGBOC
-zJKORNQsDgYs949sWOsQz+q09NIhOkd1jlvE7GA5g/v6+UkWuN7ZGAhFnre3u9Aa
-pn3xyqO9Sur6h2S17EUlRVYww7OITTquSsjZT6l5cKA6FRIuEm3PuBypuHLo3CAB
-+rZXSDUdXQKBgQDbAvdNV6LHVTykEXTGMlpRSkF0tm2g7/Oox2gnpgMWWFw/Bbqc
-OESqswVh5yChg25RcRMJXpHSWSef7RDUckaVde4X2ARDWv8V3evT9jElx9Z+AdAU
-Jjj3kQyKR8CNc/ylanemzXnAagsL/FGDT4OxfANryia5eQ58ILOAhggAswKBgBEx
-vB9/naCQeTIGY9nH4Ko1fktiCEbgDr3sw2hNPsajmGw/D3E+6qpmsankrmjk3kuM
-zMiXEU3lj9cJ4QMbNKjvi9ueD5QU3OC3Bk9rK6g5DxKgTQ7PaxmaBQC5tjPshLo0
-nJbfsWlGiVb4KEbb7tPjh6Yf77uENYwvlKC8l7e5AoGANeITeKJPjrzvHjx27Zdf
-8brrZV1zbQZoeOWR6qj/0XSufNOnGK5KJXjNE8zKovmGoZjjspnQBzoTN5uJ1IoM
-QpNYIm3S1oSDImrrNeRjIaUrVo3FAfu4vf3eKNqHLe9kUSriLU5DSu/Wfep3fFn1
-nkd5vWo7A6vkZX/Iu6MzKDE=
+MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDqObi46swn1JcP
+CHRS9iUZlec5LcnVGz8QDrKUKcLM7mymSRUG5SQ1QUcmQa4l9HeoWZOE3vgFqJNd
+BiEJfLYN0qJolP0K9nHNsWWgAloMCzMKXAaCxB/ecM1mxoIn4eQ85OSN58h81mgv
+HNicUgKi4g0DkTulJT/d5Qf7zJANCq6d3pcaDl/rwuiMKy4x1vZ4JxFdGUB6zy09
+hPzmpHRQ/8DaBaEQ7LyXX14ErLGorJfonl1R52dvt1KUCHcv7Z1p8KAQjbZe8VY3
+XThY326NIXYY0d7LlnAHBAujyrvCtFFQRHw0yZWaLAFiqnqAAedpIshv9KpvditE
+nZFxvOA5AgMBAAECggEBAMltalZcVcXLJT1gX+kYlT8zku2xWulRzSHaAek5ILVs
+NTOrldGgLUs/IBjeUw2A94Znwl16AoGbP1+4baDjBw1MHy8hMZvD5IqoDGVWoGnL
+F9HI4jCCyYVaLMo93KC/urBDh+ohcmEpYd9iR0XnoSzCib6Pn2OebRY+aGc6vIb5
+C4gFjTZ8K+zSlTpd5Jx/B7wN4/IDuQxZIDkhNfqUj6OBnMIW/KvIUKGKmV0r4oXL
+dacqoj5jbcRLl+SPqvMDcDqa2c37qWgctfalc8WQgooPBDkgMy38bZYsaTsa8k11
+APdxIAYJaI8Yjy6fSZbuIp2SXfSLFhL+ofUSA1Xp+6ECgYEA+OChC1xj5rHvfUdQ
+TyWSEywrD3HkYc12MEUWLF20aXF8lSYzuWRuOaz8DM45tMq0WkTFvQ0wd+xpEQfC
+/9ZwQ0B/gb2P4T8iJFbjKDzgCleNfrAO6jz2h3qEKee6lC+0CX+37L4HFuPVqyDQ
+OXfQZbIgbCUUCHDNi8d7rHclfPsCgYEA8O2/Gk/rXKjq2PyZ52UP7KhwSd48RNKM
+NChIhMDZnKj//W1z8OQa0RHfXIPJ33ZOmaKunPT//foD48uuz9HrqLuwCRlfCfqJ
+CQSUwp+YAoWDn0oSg/2jdAm16ziS6O0MpH4EL9zmHMeOaf4NmTIXlz8SXpYzeJ1c
+ZmvtM+er6VsCgYEAioh/HFPRSBjDtnh7u5KuPP3Y+j/rYIV9xGCwdwGx6v/A2UTq
+hcfhkzk3E+m3NWuf+J9PcmxlDlwKH/CyGrbCxqygTRe3fyolVxUGXN+F1jvmBx75
+LmnA0Kjh6HGU6eejz6XIO3+LcrJfvWIGhfarifAdHBWHkSs5PxVLQjUQKQECgYEA
+5IG5dO1D37heNbsvBWa2+dCv33+mTegcDgP+89otCwbG9Mhw5JKUVKLM5GQifY0p
+81F2p2s/uNT+B3nRrU3+YyTQS3EC0OYMPr9XkFfpxsp3EgchFIrmElJ7dkNMIxth
+mEnlErhCkB09F45bu2blNRAfDhMLcmRdlM7cRRR/2m0CgYBkOWtF+/+Wm5YJRpWo
+K3lKVbcq9S24X3KcDUXg5s/Ijc8nzK1/MrMxJs4N5YPoD9UQhK+qVQYOhrgl5MFH
+zP8bbWF17rlhP6BiqSnlF/DzSrgZAfySDkPIe/VkvrpYLqORuSzYP6jXRfz7Lpp8
+7lVnzaO20Qkcj4RYWor59BE1LQ==
 -----END PRIVATE KEY-----
 EOF
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/dh2048.pem
 -----BEGIN DH PARAMETERS-----
-MIIBCAKCAQEAohzwXz9fsjw+G9Q14qINNOhZnTt/b30zzJYm4o2NIzAngM6E6GPm
-N5USUt0grZw6h3VP9LyqQoGi/bHFz33YFG5lgDF8FAASEh07/leF7s0ohhK8pspC
-JVD+mRatwBrIImXUpJvYI2pXKxtCOnDa2FFjAOHKixiAXqVcmJRwNaSklQcrpXdn
-/09cr0rbFoovn+f1agly4FxYYs7P0XkvSHm3gVW/mhAUr1hvZlbBaWFSVUdgcVOi
-FXQ/AVkvxYaO8pFI2Vh+CNMk7Vvi8d3DTayvoL2HTgFi+OIEbiiE/Nzryu+jDGc7
-79FkBHWOa/7eD2nFrHScUJcwWiSevPQjQwIBAg==
+MIIBCAKCAQEAv4qM2EbvKNExWO4yYQCJ5d7/coGMSI2TVMm8LWNXlArbggOGEEMS
+WiYaUDVThjgz2ct+HUPuLsHWN2k0OLe/p2rbS0AlQ08ZkOoL7U5aqlUb5YK+iHli
+i3VugnELm1r8OJW2FIK3N/SeE6GaHtp71ZfAjkxNdwvxomjD0V/j7hNoV8cYWur8
+cyYWBoMfQMkbTy2snGfBqQTcP3tnbBcPRTumTSFDyQ9c21syKggfxnT1r3CEQNlJ
+mqSURBYIq+kv8MNjs7C8mQ9IpPZVkeBMNVGxPoQ9QasiotHdeWq4hGMxO3/3HGII
+UBBXbEFgkbLoIxA9WUheh+nBVRGDoGgrewIBAg==
 -----END DH PARAMETERS-----
 EOF
 
@@ -501,586 +498,13 @@ socket = r:TCP_NODELAY=1
 client = no
 [squid]
 accept = 8000
-connect = 127.0.0.1:8010
-
-[SSH]
-accept = 333
-connect = 127.0.0.1:22
+connect = 127.0.0.1:8080
 
 [openvpn]
 accept = 443
 connect = 127.0.0.1:1194'| sudo tee /etc/stunnel/stunnel.conf
 echo -e "\e[1;32m Done Installing Stunnel  \033[0m"
 sleep 2
-
-
-
-
-
-#API Details
-VPN_Owner='Tknetwork';
-API_LINK='http://boltnetvpn.net/api/authentication';
-API_KEY='Tknetwork';
-
-
-
-sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
-
-cat <<EOF >/home/authentication.sh
-#!/bin/bash
-SHELL=/bin/bash
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
-wget -O /home/active.sh "$API_LINK/active.php?key=$API_KEY"
-sleep 5
-wget -O /home/inactive.sh "$API_LINK/inactive.php?key=$API_KEY"
-sleep 5
-wget -O /home/deleted.sh "$API_LINK/deleted.php?key=$API_KEY"
-sleep 15
-bash /home/active.sh
-sleep 15
-bash /home/inactive.sh
-sleep 15
-bash /home/deleted.sh
-EOF
-
-echo -e "* *\t* * *\troot\tsudo bash /home/authentication.sh" >> "/etc/cron.d/account"
-
-
-
-
-
-
-
-
-
-apt-get install netcat lsof php php-mysqli php-mysql php-gd php-mbstring python -y > /dev/null 2>&1
-
-cat << \socksssh > /usr/local/sbin/proxy.py
-#!/usr/bin/env python3
-# encoding: utf-8
-# SOcks By Tknetwork
-import socket, threading, thread, select, signal, sys, time
-from os import system
-system("clear")
-#conexao
-IP = '0.0.0.0'
-try:
-   PORT = int(sys.argv[1])
-except:
-   PORT = 8070
-PASS = ''
-BUFLEN = 8196 * 8
-TIMEOUT = 60
-MSG = 'Powered By: Tk@Network'
-COR = '<font color="green">'
-FTAG = '</font>'
-DEFAULT_HOST = '0.0.0.0:22'
-RESPONSE = "HTTP/1.1 200 " + str(COR) + str(MSG) + str(FTAG) + "\r\n\r\n"
- 
-class Server(threading.Thread):
-    def __init__(self, host, port):
-        threading.Thread.__init__(self)
-        self.running = False
-        self.host = host
-        self.port = port
-        self.threads = []
-	self.threadsLock = threading.Lock()
-	self.logLock = threading.Lock()
-
-    def run(self):
-        self.soc = socket.socket(socket.AF_INET)
-        self.soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.soc.settimeout(2)
-        self.soc.bind((self.host, self.port))
-        self.soc.listen(0)
-        self.running = True
-
-        try:                    
-            while self.running:
-                try:
-                    c, addr = self.soc.accept()
-                    c.setblocking(1)
-                except socket.timeout:
-                    continue
-                
-                conn = ConnectionHandler(c, self, addr)
-                conn.start();
-                self.addConn(conn)
-        finally:
-            self.running = False
-            self.soc.close()
-            
-    def printLog(self, log):
-        self.logLock.acquire()
-        print log
-        self.logLock.release()
-	
-    def addConn(self, conn):
-        try:
-            self.threadsLock.acquire()
-            if self.running:
-                self.threads.append(conn)
-        finally:
-            self.threadsLock.release()
-                    
-    def removeConn(self, conn):
-        try:
-            self.threadsLock.acquire()
-            self.threads.remove(conn)
-        finally:
-            self.threadsLock.release()
-                
-    def close(self):
-        try:
-            self.running = False
-            self.threadsLock.acquire()
-            
-            threads = list(self.threads)
-            for c in threads:
-                c.close()
-        finally:
-            self.threadsLock.release()
-			
-
-class ConnectionHandler(threading.Thread):
-    def __init__(self, socClient, server, addr):
-        threading.Thread.__init__(self)
-        self.clientClosed = False
-        self.targetClosed = True
-        self.client = socClient
-        self.client_buffer = ''
-        self.server = server
-        self.log = 'Conexao: ' + str(addr)
-
-    def close(self):
-        try:
-            if not self.clientClosed:
-                self.client.shutdown(socket.SHUT_RDWR)
-                self.client.close()
-        except:
-            pass
-        finally:
-            self.clientClosed = True
-            
-        try:
-            if not self.targetClosed:
-                self.target.shutdown(socket.SHUT_RDWR)
-                self.target.close()
-        except:
-            pass
-        finally:
-            self.targetClosed = True
-
-    def run(self):
-        try:
-            self.client_buffer = self.client.recv(BUFLEN)
-        
-            hostPort = self.findHeader(self.client_buffer, 'X-Real-Host')
-            
-            if hostPort == '':
-                hostPort = DEFAULT_HOST
-
-            split = self.findHeader(self.client_buffer, 'X-Split')
-
-            if split != '':
-                self.client.recv(BUFLEN)
-            
-            if hostPort != '':
-                passwd = self.findHeader(self.client_buffer, 'X-Pass')
-				
-                if len(PASS) != 0 and passwd == PASS:
-                    self.method_CONNECT(hostPort)
-                elif len(PASS) != 0 and passwd != PASS:
-                    self.client.send('HTTP/1.1 400 WrongPass!\r\n\r\n')
-                if hostPort.startswith(IP):
-                    self.method_CONNECT(hostPort)
-                else:
-                   self.client.send('HTTP/1.1 403 Forbidden!\r\n\r\n')
-            else:
-                print '- No X-Real-Host!'
-                self.client.send('HTTP/1.1 400 NoXRealHost!\r\n\r\n')
-
-        except Exception as e:
-            self.log += ' - error: ' + e.strerror
-            self.server.printLog(self.log)
-	    pass
-        finally:
-            self.close()
-            self.server.removeConn(self)
-
-    def findHeader(self, head, header):
-        aux = head.find(header + ': ')
-    
-        if aux == -1:
-            return ''
-
-        aux = head.find(':', aux)
-        head = head[aux+2:]
-        aux = head.find('\r\n')
-
-        if aux == -1:
-            return ''
-
-        return head[:aux];
-
-    def connect_target(self, host):
-        i = host.find(':')
-        if i != -1:
-            port = int(host[i+1:])
-            host = host[:i]
-        else:
-            if self.method=='CONNECT':
-                port = 1194
-            else:
-                port = 22
-
-        (soc_family, soc_type, proto, _, address) = socket.getaddrinfo(host, port)[0]
-
-        self.target = socket.socket(soc_family, soc_type, proto)
-        self.targetClosed = False
-        self.target.connect(address)
-
-    def method_CONNECT(self, path):
-    	self.log += ' - CONNECT ' + path
-        self.connect_target(path)
-        self.client.sendall(RESPONSE)
-        self.client_buffer = ''
-        self.server.printLog(self.log)
-        self.doCONNECT()
-                    
-    def doCONNECT(self):
-        socs = [self.client, self.target]
-        count = 0
-        error = False
-        while True:
-            count += 1
-            (recv, _, err) = select.select(socs, [], socs, 3)
-            if err:
-                error = True
-            if recv:
-                for in_ in recv:
-		    try:
-                        data = in_.recv(BUFLEN)
-                        if data:
-			    if in_ is self.target:
-				self.client.send(data)
-                            else:
-                                while data:
-                                    byte = self.target.send(data)
-                                    data = data[byte:]
-
-                            count = 0
-			else:
-			    break
-		    except:
-                        error = True
-                        break
-            if count == TIMEOUT:
-                error = True
-
-            if error:
-                break
-
-
-
-def main(host=IP, port=PORT):
-    print "\033[0;34mâ”"*8,"\033[1;32m PROXY SOCKS","\033[0;34mâ”"*8,"\n"
-    print "\033[1;33mIP:\033[1;32m " + IP
-    print "\033[1;33mPORTA:\033[1;32m " + str(PORT) + "\n"
-    print "\033[0;34mâ”"*10,"\033[1;32m TKNetwork","\033[0;34mâ”\033[1;37m"*11,"\n"
-    server = Server(IP, PORT)
-    server.start()
-    while True:
-        try:
-            time.sleep(2)
-        except KeyboardInterrupt:
-            print '\nParando...'
-            server.close()
-            break
-if __name__ == '__main__':
-    main()
-socksssh
-
-
-cat << \socksopenvpn > /usr/local/sbin/proxy2.py
-#!/usr/bin/env python3
-# encoding: utf-8
-#  By: Tk@Network
-import socket, threading, thread, select, signal, sys, time
-from os import system
-system("clear")
-#conexao
-IP = '0.0.0.0'
-try:
-   PORT = int(sys.argv[1])
-except:
-   PORT = 8080
-PASS = ''
-BUFLEN = 8196 * 8
-TIMEOUT = 60
-MSG = 'Tk@Network'
-DEFAULT_HOST = '0.0.0.0:1194'
-RESPONSE = "HTTP/1.1 200 " + str(MSG) + "\r\n\r\n"
-
-class Server(threading.Thread):
-    def __init__(self, host, port):
-        threading.Thread.__init__(self)
-        self.running = False
-        self.host = host
-        self.port = port
-        self.threads = []
-	self.threadsLock = threading.Lock()
-	self.logLock = threading.Lock()
-
-    def run(self):
-        self.soc = socket.socket(socket.AF_INET)
-        self.soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.soc.settimeout(2)
-        self.soc.bind((self.host, self.port))
-        self.soc.listen(0)
-        self.running = True
-
-        try:                    
-            while self.running:
-                try:
-                    c, addr = self.soc.accept()
-                    c.setblocking(1)
-                except socket.timeout:
-                    continue
-                
-                conn = ConnectionHandler(c, self, addr)
-                conn.start();
-                self.addConn(conn)
-        finally:
-            self.running = False
-            self.soc.close()
-            
-    def printLog(self, log):
-        self.logLock.acquire()
-        print log
-        self.logLock.release()
-	
-    def addConn(self, conn):
-        try:
-            self.threadsLock.acquire()
-            if self.running:
-                self.threads.append(conn)
-        finally:
-            self.threadsLock.release()
-                    
-    def removeConn(self, conn):
-        try:
-            self.threadsLock.acquire()
-            self.threads.remove(conn)
-        finally:
-            self.threadsLock.release()
-                
-    def close(self):
-        try:
-            self.running = False
-            self.threadsLock.acquire()
-            
-            threads = list(self.threads)
-            for c in threads:
-                c.close()
-        finally:
-            self.threadsLock.release()
-			
-
-class ConnectionHandler(threading.Thread):
-    def __init__(self, socClient, server, addr):
-        threading.Thread.__init__(self)
-        self.clientClosed = False
-        self.targetClosed = True
-        self.client = socClient
-        self.client_buffer = ''
-        self.server = server
-        self.log = 'Conexao: ' + str(addr)
-
-    def close(self):
-        try:
-            if not self.clientClosed:
-                self.client.shutdown(socket.SHUT_RDWR)
-                self.client.close()
-        except:
-            pass
-        finally:
-            self.clientClosed = True
-            
-        try:
-            if not self.targetClosed:
-                self.target.shutdown(socket.SHUT_RDWR)
-                self.target.close()
-        except:
-            pass
-        finally:
-            self.targetClosed = True
-
-    def run(self):
-        try:
-            self.client_buffer = self.client.recv(BUFLEN)
-        
-            hostPort = self.findHeader(self.client_buffer, 'X-Real-Host')
-            
-            if hostPort == '':
-                hostPort = DEFAULT_HOST
-
-            split = self.findHeader(self.client_buffer, 'X-Split')
-
-            if split != '':
-                self.client.recv(BUFLEN)
-            
-            if hostPort != '':
-                passwd = self.findHeader(self.client_buffer, 'X-Pass')
-				
-                if len(PASS) != 0 and passwd == PASS:
-                    self.method_CONNECT(hostPort)
-                elif len(PASS) != 0 and passwd != PASS:
-                    self.client.send('HTTP/1.1 400 WrongPass!\r\n\r\n')
-                if hostPort.startswith(IP):
-                    self.method_CONNECT(hostPort)
-                else:
-                   self.client.send('HTTP/1.1 403 Forbidden!\r\n\r\n')
-            else:
-                print '- No X-Real-Host!'
-                self.client.send('HTTP/1.1 400 NoXRealHost!\r\n\r\n')
-
-        except Exception as e:
-            self.log += ' - error: ' + e.strerror
-            self.server.printLog(self.log)
-	    pass
-        finally:
-            self.close()
-            self.server.removeConn(self)
-
-    def findHeader(self, head, header):
-        aux = head.find(header + ': ')
-    
-        if aux == -1:
-            return ''
-
-        aux = head.find(':', aux)
-        head = head[aux+2:]
-        aux = head.find('\r\n')
-
-        if aux == -1:
-            return ''
-
-        return head[:aux];
-
-    def connect_target(self, host):
-        i = host.find(':')
-        if i != -1:
-            port = int(host[i+1:])
-            host = host[:i]
-        else:
-            if self.method=='CONNECT':
-                port = 1194
-            else:
-                port = 22
-
-        (soc_family, soc_type, proto, _, address) = socket.getaddrinfo(host, port)[0]
-
-        self.target = socket.socket(soc_family, soc_type, proto)
-        self.targetClosed = False
-        self.target.connect(address)
-
-    def method_CONNECT(self, path):
-    	self.log += ' - CONNECT ' + path
-        self.connect_target(path)
-        self.client.sendall(RESPONSE)
-        self.client_buffer = ''
-        self.server.printLog(self.log)
-        self.doCONNECT()
-                    
-    def doCONNECT(self):
-        socs = [self.client, self.target]
-        count = 0
-        error = False
-        while True:
-            count += 1
-            (recv, _, err) = select.select(socs, [], socs, 3)
-            if err:
-                error = True
-            if recv:
-                for in_ in recv:
-		    try:
-                        data = in_.recv(BUFLEN)
-                        if data:
-			    if in_ is self.target:
-				self.client.send(data)
-                            else:
-                                while data:
-                                    byte = self.target.send(data)
-                                    data = data[byte:]
-
-                            count = 0
-			else:
-			    break
-		    except:
-                        error = True
-                        break
-            if count == TIMEOUT:
-                error = True
-
-            if error:
-                break
-
-
-
-def main(host=IP, port=PORT):
-    print "\033[0;34mâ”"*8,"\033[1;32m PROXY SOCKS","\033[0;34mâ”"*8,"\n"
-    print "\033[1;33mIP:\033[1;32m " + IP
-    print "\033[1;33mPORTA:\033[1;32m " + str(PORT) + "\n"
-    print "\033[0;34mâ”"*10,"\033[1;32m TKnetwork","\033[0;34mâ”\033[1;37m"*11,"\n"
-    server = Server(IP, PORT)
-    server.start()
-    while True:
-        try:
-            time.sleep(2)
-        except KeyboardInterrupt:
-            print '\nParando...'
-            server.close()
-            break
-if __name__ == '__main__':
-    main()
-socksopenvpn
-
-
-cat << \autostart > /root/auto
-#!/bin/bash
-if nc -z localhost 8070; then
-    echo "SocksProxy running"
-else
-    echo "Starting Port 8070"
-    screen -dmS proxy2 python /usr/local/sbin/proxy.py 8070
-fi
-if nc -z localhost 8080; then
-    echo "SocksProxy 8080 running"
-else
-    echo "Starting Port 8080"
-    screen -dmS proxy python /usr/local/sbin/proxy2.py 8080
-fi
-
-
-if nc -z localhost 7300; then
-    echo "badvpn running"
-else
-    echo "Starting Badvpn"
-    screen -dmS udpvpn /bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 1000 --max-connections-for-client 3
-fi
-autostart
-
-chmod +x /root/auto
-/root/auto;
-rm -rf /root/auto13
-
-
-
-crontab -r
-echo "SHELL=/bin/bash
-* * * * * /bin/bash /root/auto >/dev/null 2>&1" | crontab -
-
 
 echo -e "\033[01;31m Configuring Iptables & Fail2ban \033[0m"
 sudo add-apt-repository ppa:linrunner/tlp -y > /dev/null 2>&1
@@ -1144,7 +568,7 @@ service cron restart
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 sed -i 's/bantime  = 600/bantime  = 3600/g' /etc/fail2ban/jail.local
 sed -i 's/maxretry = 10/maxretry = 3/g' /etc/fail2ban/jail.local
-sed -i 's/destemail = '.*'/destemail = eric@gmail.com/g' /etc/fail2ban/jail.local
+sed -i 's/destemail = '.*'/destemail = a2zvpn@gmail.com/g' /etc/fail2ban/jail.local
 
 sudo timedatectl set-timezone Asia/Dhaka
 timedatectl
@@ -1165,7 +589,7 @@ sleep 2
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Tk@Network International</title>
+<title>Firenet Philippines</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <link rel="stylesheet" href="https://bootswatch.com/4/slate/bootstrap.min.css" media="screen">
@@ -1195,9 +619,9 @@ sleep 2
 <body>
 <div class="container" style="padding-top: 50px">
 <div class="jumbotron">
-<h1 class="display-3 text-center fn-color">Tk@Network</h1>
+<h1 class="display-3 text-center fn-color">FIRENET SCRIPTZ</h1>
 <h4 class="text-center fn-color">Follow Us</h4>
-<p class="text-center">https://web.facebook.com/ericson.hernandez1</p>
+<p class="text-center">https://facebook.com/firenetphilippines</p>
 </div>
 </div>
 </body>
@@ -1210,7 +634,7 @@ cat <<'SquidProxy' > /etc/squid/squid.conf
 acl VPN dst IP-ADDRESS/32
 http_access allow VPN
 http_access deny all
-http_port 0.0.0.0:8010
+http_port 0.0.0.0:8080
 http_port 0.0.0.0:3128
 acl bonv src 0.0.0.0/0.0.0.0
 no_cache deny bonv
@@ -1234,5 +658,5 @@ history -c
 cd /root || exit
 rm -f /root/installer.sh
 echo -e "\e[1;32m Installing Done \033[0m"
-echo 'root:SO11MIRR' | sudo chpasswd
+echo 'root:@@@F1r3n3t' | sudo chpasswd
 reboot
