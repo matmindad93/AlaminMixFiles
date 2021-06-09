@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #Database Details
-HOST='webhosting2031.is.cc'
-USER='asintern-md'
-PASS='JAN022011b'
-DB='asintern-md'
+HOST='209.159.147.190'
+USER='routervp_routervp'
+PASS='@L@m1n121'
+DB='routervp_routervp'
 
 
 
