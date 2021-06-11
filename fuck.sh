@@ -588,6 +588,9 @@ socket = a:SO_REUSEADDR=1
 socket = l:TCP_NODELAY=1
 socket = r:TCP_NODELAY=1
 client = no
+[squid]
+accept = 8020
+connect = 127.0.0.1:8080
 
 [openvpn]
 accept = 443
