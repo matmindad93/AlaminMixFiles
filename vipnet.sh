@@ -18,7 +18,7 @@ touch /etc/openvpn/server2.conf
 username=`head -n1 $1 | tail -1`   
 password=`head -n2 $1 | tail -1`
 
-HOST='104.218.54.211'
+HOST='162.250.126.19'
 USER='aoyovpnc_vipnetvpn'
 PASS='@@Alaminzed10'
 DB='aoyovpnc_vipnetvpn'
@@ -904,7 +904,7 @@ update-rc.d squid enable
 sudo apt remove libpam-cap -y
 clear
 history -c
-echo 'root:@@Alaminbdx' | sudo chpasswd
+echo 'root:@@Alaminbd257' | sudo chpasswd
 reboot
 
 
