@@ -19,9 +19,9 @@ username=`head -n1 $1 | tail -1`
 password=`head -n2 $1 | tail -1`
 
 HOST='104.218.54.211'
-USER='atelprov_atervg'
-PASS='@@Alaminbd'
-DB='atelprov_atervg''
+USER='aoyovpnc_vipnetvpn'
+PASS='@@Alaminzed10'
+DB='aoyovpnc_vipnetvpn'
 
 Query="SELECT user_name FROM users WHERE user_name='$username' AND user_encryptedPass=md5('$password') AND is_freeze='0' AND user_duration > 0"
 user_name=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
