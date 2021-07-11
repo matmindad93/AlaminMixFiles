@@ -1,3 +1,4 @@
+#!/bin/bash
 apt-get update -y
 
 DEBIAN_FRONTEND=noninteractive apt-get full-upgrade -q -y -u  -o Dpkg::Options::="--force-confdef" --allow-downgrades --allow-remove-essential --allow-change-held-packages --allow-unauthenticated
@@ -492,7 +493,7 @@ sudo chmod +x /etc/init.d/squid3
 sudo update-rc.d squid3 defaults
 
 echo "http_port 8080
-acl to_vpn dst `curl ipinfo.io/ip`
+acl to_vpn dst $(curl ipinfo.io/ip)
 http_access allow to_vpn 
 via off
 forwarded_for off
@@ -624,18 +625,18 @@ net.ipv4.icmp_echo_ignore_all = 1' >> /etc/sysctl.conf
 echo '* soft nofile 512000
 * hard nofile 512000' >> /etc/security/limits.conf
 ulimit -n 512000
-SELINUX=disabled 
+echo SELINUX=disabled 
 sysctl -p
 
 iptables -F; iptables -X; iptables -Z
 iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j SNAT --to-source "curl ipecho.net/plain"
 iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o ens3 -j SNAT --to-source "curl ipecho.net/plain"
 iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j SNAT --to-source "curl ipecho.net/plain"
 iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j SNAT --to-source `curl ipecho.net/plain`
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o ens3 -j SNAT --to-source "curl ipecho.net/plain"
 
 sudo usermod -a -G www-data root
 sudo chgrp -R www-data /var/www
