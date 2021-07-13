@@ -3,7 +3,7 @@
 #############################
 # Variables (Can be changed depends on your preferred values)
 # Script name
-MyScriptName='Al-amin Sarker - AIO SERVER'
+MyScriptName='Nima-SSH - AIO SERVER'
 
 #
 #####################
@@ -83,7 +83,7 @@ MyVPS_Time='Asia/Manila'
 
 function InstCategory(){
 echo -e "==================================================================="
-echo -e "        Select Server Category | AUTOSCRIPT BY AL-AMIN SARKER          "
+echo -e "        Select Server Category | AUTOSCRIPT BY NIMA-SSH          "
 echo -e "==================================================================="
 echo -e " "
 echo -e "1 ) PREMIUM "
@@ -1086,7 +1086,7 @@ done
  # executed/raised from this script (OpenVPN_TCP_Port/OpenVPN_UDP_Port)
  #
  # Enjoy the new update
- # Script Updated by Al-amin Sarker
+ # Script Updated by Nima SSH
 NUovpn
 
  # setting openvpn server port
